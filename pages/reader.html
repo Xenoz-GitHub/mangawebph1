@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Reading - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        .reader-page {
+            min-height: 100vh;
+            background: #1a1a1a;
+            position: relative;
+        }
+        
+        .reader-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .reader-header.hidden {
+            transform: translateY(-100%);
+        }
+        
+        .reader-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .reader-title h1 {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        .reader-title span {
+            color: var(--primary-color);
+        }
+        
+        .reader-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .reader-controls button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .reader-controls button:hover {
+            background: var(--primary-color);
+            transform: scale(1.1);
+        }
+        
+        .reader-controls button i {
+            font-size: 1.1rem;
+        }
+        
+        .reader-progress {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            z-index: 999;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .reader-container {
+            max-width: 900px;
+            margin: 80px auto 0;
+            padding: 2rem;
+        }
+        
+        .reader-pages {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .reader-page-image {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .reader-page-image.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .reader-page-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            cursor: pointer;
+        }
+        
+        .reader-navigation {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            background: rgba(0,0,0,0.8);
+            padding: 0.8rem;
+            border-radius: 50px;
+            z-index: 998;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background: var(--primary-color);
+            transform: scale(1.05);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .page-indicator {
+            color: white;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .settings-panel {
+            position: fixed;
+            top: 80px;
+            right: 2rem;
+            background: rgba(0,0,0,0.9);
+            border-radius: 20px;
+            padding: 1.5rem;
+            color: white;
+            z-index: 999;
+            width: 300px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .settings-panel.show {
+            transform: translateX(0);
+        }
+        
+        .settings-panel h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+        
+        .setting-item {
+            margin-bottom: 1.5rem;
+        }
+        
+        .setting-item label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        .setting-item select,
+        .setting-item input[type="range"] {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .setting-item select option {
+            background: #333;
+        }
+        
+        .brightness-value,
+        .font-value {
+            display: inline-block;
+            margin-left: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .chapter-complete {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 3rem;
+            border-radius: 30px;
+            text-align: center;
+            z-index: 9999;
+            animation: popIn 0.5s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .chapter-complete h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .chapter-complete p {
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .chapter-complete-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .chapter-complete-btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .chapter-complete-btn.primary {
+            background: white;
+            color: var(--primary-color);
+        }
+        
+        .chapter-complete-btn.secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .chapter-complete-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .loading-chapter {
+            text-align: center;
+            padding: 4rem;
+            color: white;
+        }
+        
+        .loading-chapter i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .reader-header {
+                padding: 1rem;
+            }
+            
+            .reader-title h1 {
+                font-size: 1rem;
+                max-width: 150px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .reader-controls button {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .reader-navigation {
+                bottom: 1rem;
+                padding: 0.5rem;
+            }
+            
+            .nav-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .nav-btn span {
+                display: none;
+            }
+            
+            .page-indicator {
+                padding: 0.6rem 1rem;
+            }
+            
+            .settings-panel {
+                width: 250px;
+                right: 1rem;
+            }
+            
+            .chapter-complete {
+                width: 90%;
+                padding: 2rem;
+            }
+            
+            .chapter-complete h2 {
+                font-size: 1.5rem;
+            }
+            
+            .chapter-complete-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .reader-title h1 {
+                max-width: 100px;
+            }
+            
+            .reader-controls {
+                gap: 0.5rem;
+            }
+            
+            .reader-controls button {
+                width: 30px;
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Reader Header -->
+    <header class="reader-header" id="readerHeader">
+        <div class="reader-title">
+            <a href="javascript:history.back()" style="color: white;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h1 id="mangaTitle">Loading...</h1>
+                <span id="chapterInfo">Chapter 1</span>
+            </div>
+        </div>
+        
+        <div class="reader-controls">
+            <button onclick="toggleSettings()">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button onclick="toggleFullscreen()">
+                <i class="fas fa-expand"></i>
+            </button>
+            <button onclick="toggleHeader()">
+                <i class="fas fa-chevron-up"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Reading Progress -->
+    <div class="reader-progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <!-- Main Reader Container -->
+    <main class="reader-page">
+        <div class="reader-container">
+            <div class="reader-pages" id="readerPages">
+                <div class="loading-chapter">
+                    <i class="fas fa-spinner"></i>
+                    <p>Loading chapter...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Controls -->
+        <div class="reader-navigation">
+            <button class="nav-btn" id="prevChapter" onclick="changeChapter('prev')" disabled>
+                <i class="fas fa-chevron-left"></i>
+                <span>Prev</span>
+            </button>
+            <button class="nav-btn" id="prevPage" onclick="changePage('prev')" disabled>
+                <i class="fas fa-arrow-up"></i>
+                <span>Previous</span>
+            </button>
+            <span class="page-indicator" id="pageIndicator">1 / 1</span>
+            <button class="nav-btn" id="nextPage" onclick="changePage('next')">
+                <i class="fas fa-arrow-down"></i>
+                <span>Next</span>
+            </button>
+            <button class="nav-btn" id="nextChapter" onclick="changeChapter('next')">
+                <span>Next</span>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        
+        <!-- Settings Panel -->
+        <div class="settings-panel" id="settingsPanel">
+            <h3><i class="fas fa-cog"></i> Reading Settings</h3>
+            
+            <div class="setting-item">
+                <label>Brightness</label>
+                <input type="range" id="brightness" min="0" max="100" value="100" oninput="adjustBrightness(this.value)">
+                <span class="brightness-value" id="brightnessValue">100%</span>
+            </div>
+            
+            <div class="setting-item">
+                <label>Reading Direction</label>
+                <select id="readingDirection" onchange="changeDirection(this.value)">
+                    <option value="ltr">Left to Right</option>
+                    <option value="rtl">Right to Left</option>
+                    <option value="vertical">Vertical</option>
+                </select>
+            </div>
+            
+            <div class="setting-item">
+                <label>Page Fit</label>
+                <select id="pageFit" onchange="changePageFit(this.value)">
+                    <option value="contain">Fit to Screen</option>
+                    <option value="cover">Fill Screen</option>
+                    <option value="original">Original Size</option>
+                </select>
+            </div>
+            
+            <div class="setting-item">
+                <label>Auto Next Chapter</label>
+                <label class="switch">
+                    <input type="checkbox" id="autoNext" checked>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/pages/reader.js"></script>
+    
+</body>
+</html>

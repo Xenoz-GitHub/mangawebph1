@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Membership - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+   <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        .premium-page {
+            padding: 100px 2rem 4rem;
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgba(108,92,231,0.1) 0%, rgba(0,210,211,0.1) 100%);
+        }
+        
+        .premium-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .premium-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .premium-header h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, gold, #f39c12);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 2s infinite;
+        }
+        
+        .premium-header p {
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        @keyframes shine {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+        
+        .premium-badge {
+            display: inline-block;
+            padding: 0.5rem 2rem;
+            background: linear-gradient(135deg, gold, #f39c12);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .pricing-card {
+            background: white;
+            border-radius: 30px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        body.night-mode .pricing-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-20px);
+            box-shadow: 0 30px 50px rgba(108,92,231,0.3);
+        }
+        
+        .pricing-card.popular {
+            transform: scale(1.05);
+            border: 3px solid gold;
+            z-index: 1;
+        }
+        
+        .pricing-card.popular:hover {
+            transform: scale(1.05) translateY(-20px);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: 2rem;
+            right: -3rem;
+            background: gold;
+            color: #000;
+            padding: 0.5rem 3rem;
+            transform: rotate(45deg);
+            font-weight: 600;
+        }
+        
+        .pricing-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .pricing-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .pricing-price span {
+            font-size: 1rem;
+            color: #666;
+            font-weight: normal;
+        }
+        
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        
+        .pricing-features li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .pricing-features i {
+            color: #00b894;
+        }
+        
+        .pricing-features i.fa-times {
+            color: #d63031;
+        }
+        
+        .pricing-btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .pricing-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(108,92,231,0.3);
+        }
+        
+        .pricing-btn.popular {
+            background: linear-gradient(135deg, gold, #f39c12);
+        }
+        
+        .benefits-section {
+            margin-bottom: 4rem;
+        }
+        
+        .benefits-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .benefit-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        body.night-mode .benefit-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px rgba(108,92,231,0.2);
+        }
+        
+        .benefit-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .benefit-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .benefit-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .testimonials-section {
+            margin-bottom: 4rem;
+        }
+        
+        .testimonials-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .testimonial-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        body.night-mode .testimonial-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .testimonial-rating {
+            color: gold;
+            margin-bottom: 1rem;
+        }
+        
+        .testimonial-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .testimonial-author img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .author-info h4 {
+            margin-bottom: 0.2rem;
+        }
+        
+        .author-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .faq-section {
+            background: white;
+            border-radius: 30px;
+            padding: 3rem;
+            margin-top: 4rem;
+        }
+        
+        body.night-mode .faq-section {
+            background: var(--card-bg-dark);
+        }
+        
+        .faq-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+        
+        .faq-item {
+            padding: 1.5rem;
+            border-radius: 15px;
+            background: rgba(108,92,231,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            background: rgba(108,92,231,0.1);
+        }
+        
+        .faq-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .faq-question i {
+            color: var(--primary-color);
+        }
+        
+        .faq-answer {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .comparison-table {
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            margin-top: 4rem;
+            overflow-x: auto;
+        }
+        
+        body.night-mode .comparison-table {
+            background: var(--card-bg-dark);
+        }
+        
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th {
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .comparison-table .feature-name {
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .comparison-table .check {
+            color: #00b894;
+            font-size: 1.2rem;
+        }
+        
+        .comparison-table .times {
+            color: #d63031;
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .premium-page {
+                padding: 80px 1rem 2rem;
+            }
+            
+            .premium-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-card.popular {
+                transform: scale(1);
+            }
+            
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <!-- ... navbar content ... -->
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <!-- ... mobile menu content ... -->
+    </div>
+
+    <main class="premium-page">
+        <div class="premium-container">
+            <!-- Premium Header -->
+            <div class="premium-header">
+                <span class="premium-badge">✨ PREMIUM MEMBERSHIP</span>
+                <h1>Unlock the Ultimate Manga Experience</h1>
+                <p>Get exclusive access to premium features and support your favorite manga platform</p>
+            </div>
+            
+            <!-- Pricing Grid -->
+            <div class="pricing-grid">
+                <!-- Basic Plan -->
+                <div class="pricing-card">
+                    <div class="pricing-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h2 class="pricing-name">Basic</h2>
+                    <div class="pricing-price">
+                        ₱99 <span>/month</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> Ad-free reading</li>
+                        <li><i class="fas fa-check"></i> Early access (12 hours)</li>
+                        <li><i class="fas fa-check"></i> 5 downloads per month</li>
+                        <li><i class="fas fa-times"></i> Exclusive content</li>
+                        <li><i class="fas fa-times"></i> Premium badge</li>
+                        <li><i class="fas fa-times"></i> Priority support</li>
+                    </ul>
+                    <button class="pricing-btn" onclick="selectPlan('basic')">Get Started</button>
+                </div>
+                
+                <!-- Pro Plan (Popular) -->
+                <div class="pricing-card popular">
+                    <div class="popular-badge">MOST POPULAR</div>
+                    <div class="pricing-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h2 class="pricing-name">Pro</h2>
+                    <div class="pricing-price">
+                        ₱199 <span>/month</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> Ad-free reading</li>
+                        <li><i class="fas fa-check"></i> Early access (24 hours)</li>
+                        <li><i class="fas fa-check"></i> Unlimited downloads</li>
+                        <li><i class="fas fa-check"></i> Exclusive content</li>
+                        <li><i class="fas fa-check"></i> Premium badge</li>
+                        <li><i class="fas fa-times"></i> Priority support</li>
+                    </ul>
+                    <button class="pricing-btn popular" onclick="selectPlan('pro')">Get Started</button>
+                </div>
+                
+                <!-- Ultimate Plan -->
+                <div class="pricing-card">
+                    <div class="pricing-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h2 class="pricing-name">Ultimate</h2>
+                    <div class="pricing-price">
+                        ₱399 <span>/month</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> Ad-free reading</li>
+                        <li><i class="fas fa-check"></i> Early access (48 hours)</li>
+                        <li><i class="fas fa-check"></i> Unlimited downloads</li>
+                        <li><i class="fas fa-check"></i> Exclusive content</li>
+                        <li><i class="fas fa-check"></i> Premium badge</li>
+                        <li><i class="fas fa-check"></i> Priority support</li>
+                    </ul>
+                    <button class="pricing-btn" onclick="selectPlan('ultimate')">Get Started</button>
+                </div>
+            </div>
+            
+            <!-- Benefits Section -->
+            <div class="benefits-section">
+                <h2>Why Go Premium?</h2>
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3>Early Access</h3>
+                        <p>Read new chapters up to 48 hours before everyone else. Never wait for releases again!</p>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h3>Download & Read Offline</h3>
+                        <p>Download chapters and read them anywhere, anytime. Perfect for commutes or travel!</p>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Ad-Free Experience</h3>
+                        <p>Enjoy uninterrupted reading with absolutely no ads. Focus on the story!</p>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h3>Premium Badge</h3>
+                        <p>Show off your supporter status with an exclusive premium badge on your profile.</p>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3>Exclusive Content</h3>
+                        <p>Access premium-only manga and special content not available to free users.</p>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3>Priority Support</h3>
+                        <p>Get faster responses from our support team when you need help.</p>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <h3>Exclusive Frames</h3>
+                        <p>Unlock premium avatar frames that show your dedication to the community.</p>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Double XP</h3>
+                        <p>Earn twice the experience points from reading and completing tasks.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testimonials -->
+            <div class="testimonials-section">
+                <h2>What Our Premium Members Say</h2>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">"Premium is absolutely worth it! Early access to new chapters means I never have to wait for spoilers anymore. The ad-free experience is just the cherry on top."</p>
+                        <div class="testimonial-author">
+                            <img src="../images/default-avatar.png" alt="User">
+                            <div class="author-info">
+                                <h4>John Reyes</h4>
+                                <p>Premium Member for 6 months</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">"The download feature is a game-changer! I read during my daily commute where internet is spotty. Best decision I've made for my reading hobby."</p>
+                        <div class="testimonial-author">
+                            <img src="../images/default-avatar.png" alt="User">
+                            <div class="author-info">
+                                <h4>Maria Santos</h4>
+                                <p>Premium Member for 1 year</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">"The exclusive content alone is worth the price. Plus, supporting the platform means more quality manga for everyone. Win-win!"</p>
+                        <div class="testimonial-author">
+                            <img src="../images/default-avatar.png" alt="User">
+                            <div class="author-info">
+                                <h4>Mike Tan</h4>
+                                <p>Premium Member for 3 months</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Comparison Table -->
+            <div class="comparison-table">
+                <h2 style="text-align: center; margin-bottom: 2rem;">Compare Features</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Features</th>
+                            <th>Free</th>
+                            <th>Basic</th>
+                            <th>Pro</th>
+                            <th>Ultimate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="feature-name">Ad-free Reading</td>
+                            <td><i class="fas fa-times times"></i></td>
+                            <td><i class="fas fa-check check"></i></td>
+                            <td><i class="fas fa-check check"></i></td>
+                            <td><i class="fas fa-check check"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Early Access</td>
+                            <td>❌</td>
+                            <td>12 hours</td>
+                            <td>24 hours</td>
+                            <td>48 hours</td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Downloads</td>
+                            <td>❌</td>
+                            <td>5/month</td>
+                            <td>Unlimited</td>
+                            <td>Unlimited</td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Exclusive Content</td>
+                            <td><i class="fas fa-times times"></i></td>
+                            <td><i class="fas fa-times times"></i></td>
+                            <td><i class="fas fa-check check"></i></td>
+                            <td><i class="fas fa-check check"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Premium Badge</td>
+                            <td><i class="fas fa-times times"></i></td>
+                            <td><i class="fas fa-times times"></i></td>
+                            <td><i class="fas fa-check check"></i></td>
+                            <td><i class="fas fa-check check"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Priority Support</td>
+                            <td><i class="fas fa-times times"></i></td>
+                            <td><i class="fas fa-times times"></i></td>
+                            <td><i class="fas fa-times times"></i></td>
+                            <td><i class="fas fa-check check"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Double XP</td>
+                            <td><i class="fas fa-times times"></i></td>
+                            <td><i class="fas fa-times times"></i></td>
+                            <td><i class="fas fa-check check"></i></td>
+                            <td><i class="fas fa-check check"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Exclusive Frames</td>
+                            <td><i class="fas fa-times times"></i></td>
+                            <td><i class="fas fa-times times"></i></td>
+                            <td><i class="fas fa-check check"></i></td>
+                            <td><i class="fas fa-check check"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- FAQ Section -->
+            <div class="faq-section">
+                <h2>Frequently Asked Questions</h2>
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            How do I cancel my subscription?
+                        </div>
+                        <div class="faq-answer">
+                            You can cancel anytime from your account settings. Your premium benefits will continue until the end of your billing period.
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            Can I switch between plans?
+                        </div>
+                        <div class="faq-answer">
+                            Yes! You can upgrade or downgrade your plan at any time. Changes will take effect on your next billing cycle.
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            What payment methods do you accept?
+                        </div>
+                        <div class="faq-answer">
+                            We accept GCash, credit/debit cards, and PayPal. All payments are secure and encrypted.
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            Is there a free trial?
+                        </div>
+                        <div class="faq-answer">
+                            Yes! We offer a 7-day free trial for all premium plans. No commitment required.
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            Can I share my premium account?
+                        </div>
+                        <div class="faq-answer">
+                            Premium accounts are for individual use only. Sharing accounts violates our terms of service.
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            Do you offer refunds?
+                        </div>
+                        <div class="faq-answer">
+                            We offer a 30-day money-back guarantee if you're not satisfied with your premium membership.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Components -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <!-- ... chatbot content ... -->
+    </div>
+    
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+        
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/chatbot.js"></script>
+	<script src="../js/tasks.js"></script>
+    <script src="../js/pages/premium.js"></script>
+</body>
+</html>

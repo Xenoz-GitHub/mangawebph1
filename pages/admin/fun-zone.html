@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Zone - MangaWebPH Admin</title>
+    <link rel="icon" type="image/png" href="../../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+     <!-- Main CSS (always first) -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/mobile.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    
+    <!-- Admin CSS (add this) -->
+    <link rel="stylesheet" href="../../css/admin.css">
+    <style>
+        .cheat-code {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .cheat-code:hover {
+            transform: translateX(10px);
+        }
+        
+        .cheat-code.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .cheat-effects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .effect-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        body.night-mode .effect-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .effect-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .konami-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            z-index: 9999;
+            animation: popIn 0.5s ease;
+        }
+        
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            80% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="admin-sidebar">
+            <!-- ... same sidebar ... -->
+        </div>
+        
+        <!-- Main Content -->
+        <div class="admin-main">
+            <div class="admin-header">
+                <h1 class="admin-title">Fun Zone - Cheat Codes</h1>
+                <div class="konami-hint">
+                    <i class="fas fa-gamepad"></i> Try the Konami Code!
+                </div>
+            </div>
+            
+            <!-- Cheat Codes List -->
+            <div class="cheat-codes">
+                <h2>Active Cheat Codes</h2>
+                
+                <div class="cheat-code" onclick="toggleCheat('infinite-xp')">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><strong>↑↑↓↓←→←→BA</strong> - Infinite XP</span>
+                        <span class="cheat-status" id="status-infinite-xp">⚫ Inactive</span>
+                    </div>
+                    <small>All users get double XP for 1 hour</small>
+                </div>
+                
+                <div class="cheat-code" onclick="toggleCheat('rainbow-mode')">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><strong>R1, R2, L1, L2</strong> - Rainbow Mode</span>
+                        <span class="cheat-status" id="status-rainbow-mode">⚫ Inactive</span>
+                    </div>
+                    <small>Make everything rainbow colored for 30 minutes</small>
+                </div>
+                
+                <div class="cheat-code" onclick="toggleCheat('unlock-all')">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><strong>L1, L2, R1, R2</strong> - Unlock All</span>
+                        <span class="cheat-status" id="status-unlock-all">⚫ Inactive</span>
+                    </div>
+                    <small>Temporarily unlock all avatar frames for everyone</small>
+                </div>
+                
+                <div class="cheat-code" onclick="toggleCheat('infinite-streak')">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><strong>X, X, Y, Y</strong> - Infinite Streak</span>
+                        <span class="cheat-status" id="status-infinite-streak">⚫ Inactive</span>
+                    </div>
+                    <small>Everyone gets max streak for 24 hours</small>
+                </div>
+                
+                <div class="cheat-code" onclick="toggleCheat('party-mode')">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><strong>↑, ↑, ↓, ↓</strong> - Party Mode</span>
+                        <span class="cheat-status" id="status-party-mode">⚫ Inactive</span>
+                    </div>
+                    <small>Confetti and sound effects everywhere</small>
+                </div>
+            </div>
+            
+            <!-- Active Effects -->
+            <div class="active-effects">
+                <h2>Currently Active Effects</h2>
+                <div class="cheat-effects" id="activeEffects"></div>
+            </div>
+            
+            <!-- Cheat History -->
+            <div class="cheat-history">
+                <h2>Cheat History</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Activated By</th>
+                            <th>Time</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cheatHistory"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+   
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/supabase.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/pages/admin/admin-funzone.js"></script>
+</body>
+</html>

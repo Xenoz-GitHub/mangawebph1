@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manga Details - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- FIXED: Correct CSS paths -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        .details-page {
+            padding: 100px 2rem 4rem;
+            min-height: 100vh;
+        }
+        
+        .manga-details-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .manga-header {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        body.night-mode .manga-header {
+            background: var(--card-bg-dark);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .manga-cover {
+            position: relative;
+        }
+        
+        .manga-cover img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .manga-cover img:hover {
+            transform: scale(1.05);
+        }
+        
+        .favorite-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #ff4757;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .favorite-btn:hover {
+            transform: scale(1.1);
+            background: #ff4757;
+            color: white;
+        }
+        
+        .favorite-btn.active {
+            background: #ff4757;
+            color: white;
+        }
+        
+        .manga-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .manga-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(108,92,231,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+        }
+        
+        .stat i {
+            color: var(--primary-color);
+        }
+        
+        .rating-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .rating-stars {
+            display: flex;
+            gap: 0.3rem;
+            font-size: 1.5rem;
+        }
+        
+        .rating-stars i {
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .rating-stars i:hover,
+        .rating-stars i.active {
+            color: gold;
+            transform: scale(1.2);
+        }
+        
+        .rating-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .description {
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            color: #666;
+        }
+        
+        body.night-mode .description {
+            color: #aaa;
+        }
+        
+        .meta-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(108,92,231,0.05);
+            border-radius: 20px;
+        }
+        
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        
+        .meta-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .meta-value {
+            font-weight: 600;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .action-btn.primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+        
+        .action-btn.secondary {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .action-btn.download {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+        }
+        
+        .action-btn.download.downloaded {
+            background: linear-gradient(135deg, #636e72, #2d3436);
+            opacity: 0.8;
+            cursor: default;
+        }
+        
+        .action-btn.download.downloaded:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(108,92,231,0.3);
+        }
+        
+        .chapters-section {
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        body.night-mode .chapters-section {
+            background: var(--card-bg-dark);
+        }
+        
+        .chapters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .chapters-header h2 {
+            font-size: 1.8rem;
+        }
+        
+        .chapter-filters {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .chapter-filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(108,92,231,0.3);
+            border-radius: 20px;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .chapter-filter-btn:hover,
+        .chapter-filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .chapters-list {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 15px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .chapter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: background 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .chapter-item:hover {
+            background: rgba(108,92,231,0.05);
+        }
+        
+        .chapter-item:last-child {
+            border-bottom: none;
+        }
+        
+        .chapter-info h4 {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .chapter-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .chapter-read-btn {
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .chapter-read-btn:hover {
+            transform: translateX(5px);
+        }
+        
+        .related-section {
+            margin-top: 3rem;
+        }
+        
+        .related-section h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .comments-section {
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        body.night-mode .comments-section {
+            background: var(--card-bg-dark);
+        }
+        
+        .comment-form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .comment-form input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid rgba(108,92,231,0.2);
+            border-radius: 50px;
+            font-size: 1rem;
+            background: transparent;
+        }
+        
+        body.night-mode .comment-form input {
+            color: white;
+        }
+        
+        .comment-form button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .comment-form button:hover {
+            transform: scale(1.1);
+        }
+        
+        .comment {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .comment-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .comment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .comment-content {
+            flex: 1;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+        }
+        
+        .comment-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .comment-text {
+            line-height: 1.6;
+            color: #666;
+        }
+        
+        .comment-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .comment-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+        
+        .comment-actions button:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Download Modal Styles */
+        .download-modal,
+        .limit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .download-modal.active,
+        .limit-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .download-modal-content,
+        .limit-modal-content {
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        body.night-mode .download-modal-content,
+        body.night-mode .limit-modal-content {
+            background: var(--card-bg-dark);
+        }
+        
+        .download-modal.active .download-modal-content,
+        .limit-modal.active .limit-modal-content {
+            transform: scale(1);
+        }
+        
+        .download-info {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(108,92,231,0.05);
+            border-radius: 15px;
+        }
+        
+        .download-info img {
+            width: 80px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        
+        .download-details h4 {
+            margin-bottom: 0.3rem;
+        }
+        
+        .download-details p {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .download-progress {
+            margin: 1.5rem 0;
+        }
+        
+        .download-progress .progress-bar {
+            height: 8px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .download-progress .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .download-stats {
+            text-align: center;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        .limit-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem 0;
+        }
+        
+        .limit-stat {
+            text-align: center;
+        }
+        
+        .limit-stat .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .limit-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .progress-badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .progress-badge.completed {
+            background: #00b894;
+            color: white;
+        }
+        
+        .progress-badge.in-progress {
+            background: #fdcb6e;
+            color: #2d3436;
+        }
+        
+        @media (max-width: 768px) {
+            .manga-header {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .manga-cover {
+                max-width: 250px;
+                margin: 0 auto;
+            }
+            
+            .manga-info h1 {
+                font-size: 2rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .limit-actions {
+                flex-direction: column;
+            }
+            
+            .limit-actions a {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <img src="../images/logo.png" alt="MangaWebPH Logo" class="circular-logo">
+                    <span class="logo-text">MangaWebPH</span>
+                </div>
+            </div>
+            
+            <div class="nav-center" id="navLinks">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="manga.html" class="nav-link active">Manga</a>
+                <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+                <a href="tasks.html" class="nav-link">Tasks</a>
+                <a href="donate.html" class="nav-link">Donate</a>
+            </div>
+            
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="auth-buttons" id="authButtons">
+                    <a href="signin.html" class="btn-secondary">Sign In</a>
+                    <a href="signup.html" class="btn-primary">Sign Up</a>
+                </div>
+                <div class="user-menu hidden" id="userMenu">
+                    <img src="../images/default-avatar.png" alt="User" class="user-avatar circular-avatar" id="userAvatar">
+                    <div class="user-dropdown">
+                        <a href="profile.html">Profile</a>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="downloads.html">Downloads</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
+                </div>
+                <button class="burger-menu" id="burgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="../index.html" class="mobile-link">Home</a>
+        <a href="manga.html" class="mobile-link">Manga</a>
+        <a href="leaderboard.html" class="mobile-link">Leaderboard</a>
+        <a href="tasks.html" class="mobile-link">Tasks</a>
+        <a href="donate.html" class="mobile-link">Donate</a>
+        <a href="profile.html" class="mobile-link">Profile</a>
+        <a href="dashboard.html" class="mobile-link">Dashboard</a>
+        <a href="downloads.html" class="mobile-link">Downloads</a>
+    </div>
+
+    <main class="details-page">
+        <div class="manga-details-container" id="mangaDetails">
+            <!-- Content will be loaded dynamically -->
+        </div>
+    </main>
+
+    <!-- Download Modal -->
+    <div class="download-modal" id="downloadModal">
+        <div class="download-modal-content">
+            <h3><i class="fas fa-download"></i> Downloading Manga</h3>
+            <div class="download-info">
+                <img id="downloadCover" src="../images/no-cover.jpg" alt="">
+                <div class="download-details">
+                    <h4 id="downloadTitle"></h4>
+                    <p id="downloadChapters"></p>
+                </div>
+            </div>
+            <div class="download-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="downloadProgress" style="width: 0%;"></div>
+                </div>
+                <span id="downloadStatus">Preparing...</span>
+            </div>
+            <div class="download-stats">
+                <span id="downloadedSize">0 MB</span> / <span id="totalSize">0 MB</span>
+            </div>
+            <button class="btn-secondary" onclick="closeDownloadModal()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Limit Modal -->
+    <div class="limit-modal" id="limitModal">
+        <div class="limit-modal-content">
+            <i class="fas fa-exclamation-triangle" style="color: #fdcb6e; font-size: 3rem;"></i>
+            <h3>Download Limit Reached</h3>
+            <p id="limitMessage"></p>
+            <div class="limit-stats">
+                <div class="limit-stat">
+                    <span class="stat-label">Current Downloads</span>
+                    <span class="stat-value" id="currentDownloads">0</span>
+                </div>
+                <div class="limit-stat">
+                    <span class="stat-label">Maximum Allowed</span>
+                    <span class="stat-value" id="maxDownloads">3</span>
+                </div>
+            </div>
+            <div class="limit-actions">
+                <a href="downloads.html" class="btn-primary">Manage Downloads</a>
+                <a href="premium.html" class="btn-secondary">Get Premium</a>
+                <button class="btn-secondary" onclick="closeLimitModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Components -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <!-- Chatbot HTML -->
+        <div class="chatbot-header" id="chatbotHeader">
+            <img src="../images/chatbot-icon.png" alt="Chatbot" class="circular-avatar">
+            <span>Manga Assistant</span>
+            <button class="chatbot-toggle" id="chatbotToggle">
+                <i class="fas fa-chevron-up"></i>
+            </button>
+        </div>
+        <div class="chatbot-body" id="chatbotBody">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <div class="message-content">
+                        <p>Hi! I'm your Manga Assistant. How can I help you today?</p>
+                    </div>
+                    <span class="message-time">Just now</span>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type your message...">
+                <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+    
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Scripts - FIXED paths -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/chatbot.js"></script>
+    <script src="../js/pages/manga-details.js"></script>
+</body>
+</html>

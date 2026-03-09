@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Tasks - MangaWebPH Admin</title>
+    <link rel="icon" type="image/png" href="../../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Main CSS (always first) -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/mobile.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    
+    <!-- Admin CSS (add this) -->
+    <link rel="stylesheet" href="../../css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="admin-sidebar">
+            <!-- ... same sidebar ... -->
+        </div>
+        
+        <!-- Main Content -->
+        <div class="admin-main">
+            <div class="admin-header">
+                <h1 class="admin-title">Daily Tasks Management</h1>
+                <button class="btn-primary" onclick="showAddTaskModal()">
+                    <i class="fas fa-plus"></i> Add New Task
+                </button>
+            </div>
+            
+            <!-- Tasks List -->
+            <div class="tasks-management">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Task Name</th>
+                            <th>Description</th>
+                            <th>Target</th>
+                            <th>Reward (XP)</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tasksList"></tbody>
+                </table>
+            </div>
+            
+            <!-- Task Statistics -->
+            <div class="stats-section">
+                <h2>Task Statistics</h2>
+                <div class="admin-cards">
+                    <div class="admin-card">
+                        <div class="card-value" id="todayCompletions">0</div>
+                        <div class="card-title">Completed Today</div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="card-value" id="totalCompletions">0</div>
+                        <div class="card-title">Total Completions</div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="card-value" id="totalXPAwarded">0</div>
+                        <div class="card-title">Total XP Awarded</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Task Modal -->
+    <div class="modal" id="taskModal" style="display: none;">
+        <div class="modal-content">
+            <h2 id="modalTitle">Add New Task</h2>
+            
+            <form id="taskForm">
+                <div class="form-group">
+                    <label>Task Name</label>
+                    <input type="text" id="taskName" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="taskDescription" class="form-control" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Icon (Font Awesome class)</label>
+                    <input type="text" id="taskIcon" class="form-control" value="fa-book-open">
+                </div>
+                
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Target Count</label>
+                        <input type="number" id="taskTarget" class="form-control" min="1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Reward XP</label>
+                        <input type="number" id="taskReward" class="form-control" min="0" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Task Type</label>
+                    <select id="taskType" class="form-control">
+                        <option value="reading">Reading</option>
+                        <option value="login">Login</option>
+                        <option value="rating">Rating</option>
+                        <option value="favorite">Favorite</option>
+                        <option value="comment">Comment</option>
+                        <option value="share">Share</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="taskActive" checked> Active
+                    </label>
+                </div>
+                
+                <div style="text-align: right; margin-top: 1rem;">
+                    <button type="button" class="btn-secondary" onclick="closeTaskModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+   
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/supabase.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/pages/admin/admin-task-management.js"></script>
+</body>
+</html>

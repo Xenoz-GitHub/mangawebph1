@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        .settings-page {
+            padding: 100px 2rem 4rem;
+            min-height: 100vh;
+        }
+        
+        .settings-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+        
+        body.night-mode .settings-layout {
+            background: var(--card-bg-dark);
+        }
+        
+        .settings-sidebar {
+            background: rgba(108,92,231,0.05);
+            padding: 2rem 0;
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .settings-nav {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .settings-nav li {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-left: 3px solid transparent;
+            color: var(--text-secondary);
+        }
+        
+        .settings-nav li:hover {
+            background: rgba(108,92,231,0.1);
+            color: var(--primary-color);
+        }
+        
+        .settings-nav li.active {
+            background: linear-gradient(135deg, rgba(108,92,231,0.1), rgba(0,210,211,0.1));
+            border-left-color: var(--primary-color);
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .settings-nav li i {
+            width: 20px;
+        }
+        
+        .settings-content {
+            padding: 2rem;
+        }
+        
+        .settings-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .settings-section.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(108,92,231,0.2);
+            color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(108,92,231,0.2);
+            border-radius: 15px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(108,92,231,0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .avatar-upload {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .current-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--primary-color);
+        }
+        
+        .current-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .upload-btn {
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(108,92,231,0.3);
+        }
+        
+        .toggle-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .toggle-item:last-child {
+            border-bottom: none;
+        }
+        
+        .toggle-info h4 {
+            margin-bottom: 0.3rem;
+            color: var(--text-primary);
+        }
+        
+        .toggle-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .danger-zone {
+            margin-top: 3rem;
+            padding: 2rem;
+            border: 2px solid #d63031;
+            border-radius: 20px;
+        }
+        
+        .danger-zone h3 {
+            color: #d63031;
+            margin-bottom: 1rem;
+        }
+        
+        .danger-zone p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .danger-btn {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 2px solid #d63031;
+            color: #d63031;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .danger-btn:hover {
+            background: #d63031;
+            color: white;
+        }
+        
+        .save-btn {
+            padding: 1rem 3rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            display: inline-block;
+        }
+        
+        .save-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(108,92,231,0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .settings-page {
+                padding: 80px 1rem 2rem;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .settings-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .settings-sidebar {
+                padding: 1rem 0;
+            }
+            
+            .settings-nav {
+                display: flex;
+                overflow-x: auto;
+                padding: 0 1rem;
+                border-right: none;
+            }
+            
+            .settings-nav li {
+                padding: 1rem;
+                white-space: nowrap;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+            
+            .settings-nav li.active {
+                border-left-color: transparent;
+                border-bottom-color: var(--primary-color);
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <img src="../images/logo.png" alt="MangaWebPH Logo" class="circular-logo">
+                    <span class="logo-text">MangaWebPH</span>
+                </div>
+            </div>
+            
+            <div class="nav-center" id="navLinks">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="manga.html" class="nav-link">Manga</a>
+                <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+                <a href="tasks.html" class="nav-link">Tasks</a>
+                <a href="donate.html" class="nav-link">Donate</a>
+            </div>
+            
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="auth-buttons" id="authButtons">
+                    <a href="signin.html" class="btn-secondary">Sign In</a>
+                    <a href="signup.html" class="btn-primary">Sign Up</a>
+                </div>
+                <div class="user-menu hidden" id="userMenu">
+                    <img src="../images/default-avatar.png" alt="User" class="user-avatar circular-avatar" id="userAvatar">
+                    <div class="user-dropdown">
+                        <a href="profile.html">Profile</a>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="favorites.html">Favorites</a>
+                        <a href="collections.html">Collections</a>
+                        <a href="history.html">History</a>
+                        <a href="downloads.html">Downloads</a>
+                        <a href="settings.html" class="active">Settings</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
+                </div>
+                <button class="burger-menu" id="burgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="../index.html" class="mobile-link">Home</a>
+        <a href="manga.html" class="mobile-link">Manga</a>
+        <a href="leaderboard.html" class="mobile-link">Leaderboard</a>
+        <a href="tasks.html" class="mobile-link">Tasks</a>
+        <a href="donate.html" class="mobile-link">Donate</a>
+        <a href="profile.html" class="mobile-link">Profile</a>
+        <a href="dashboard.html" class="mobile-link">Dashboard</a>
+        <a href="favorites.html" class="mobile-link">Favorites</a>
+        <a href="collections.html" class="mobile-link">Collections</a>
+        <a href="history.html" class="mobile-link">History</a>
+        <a href="downloads.html" class="mobile-link">Downloads</a>
+        <a href="settings.html" class="mobile-link">Settings</a>
+    </div>
+
+    <main class="settings-page">
+        <div class="settings-container">
+            <div class="page-header">
+                <h1>Account Settings</h1>
+                <p>Manage your account preferences and security</p>
+            </div>
+            
+            <div class="settings-layout">
+                <!-- Settings Navigation -->
+                <div class="settings-sidebar">
+                    <ul class="settings-nav">
+                        <li class="active" data-section="profile">
+                            <i class="fas fa-user"></i> Profile
+                        </li>
+                        <li data-section="account">
+                            <i class="fas fa-lock"></i> Security
+                        </li>
+                        <li data-section="notifications">
+                            <i class="fas fa-bell"></i> Notifications
+                        </li>
+                        <li data-section="preferences">
+                            <i class="fas fa-palette"></i> Reading
+                        </li>
+                        <li data-section="privacy">
+                            <i class="fas fa-shield-alt"></i> Privacy
+                        </li>
+                        <li data-section="danger">
+                            <i class="fas fa-exclamation-triangle"></i> Danger Zone
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Settings Content -->
+                <div class="settings-content" id="settingsContent">
+                    <!-- Content loaded by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Components -->
+    <div class="chatbot-container" id="chatbotContainer"><!-- ... --></div>
+    <button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/chatbot.js"></script>
+    <script src="../js/pages/settings.js"></script>
+</body>
+</html>

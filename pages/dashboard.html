@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        .dashboard-page {
+            padding: 100px 2rem 4rem;
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgba(108,92,231,0.05) 0%, rgba(0,210,211,0.05) 100%);
+        }
+        
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .date-display {
+            padding: 0.8rem 1.5rem;
+            background: white;
+            border-radius: 50px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            font-weight: 500;
+        }
+        
+        body.night-mode .date-display {
+            background: var(--card-bg-dark);
+            color: white;
+        }
+        
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 30px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .welcome-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .welcome-content p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        
+        .streak-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255,255,255,0.2);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .streak-badge i {
+            font-size: 1.5rem;
+            color: gold;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+        }
+        
+        body.night-mode .stat-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(108,92,231,0.2);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .stat-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .stat-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+        }
+        
+        body.night-mode .dashboard-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header h3 {
+            font-size: 1.3rem;
+        }
+        
+        .view-all-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .view-all-link:hover {
+            transform: translateX(5px);
+        }
+        
+        .continue-reading-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .continue-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 15px;
+            background: rgba(108,92,231,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .continue-item:hover {
+            transform: translateX(10px);
+            background: rgba(108,92,231,0.1);
+        }
+        
+        .continue-item img {
+            width: 60px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        
+        .continue-info {
+            flex: 1;
+        }
+        
+        .continue-info h4 {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .continue-info p {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(108,92,231,0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            width: 0%;
+        }
+        
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+        
+        .recommend-item {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .recommend-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .recommend-item img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .recommend-item h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .recommend-item p {
+            font-size: 0.7rem;
+            color: #666;
+        }
+        
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .activity-item:hover {
+            background: rgba(108,92,231,0.05);
+        }
+        
+        .activity-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary-color);
+        }
+        
+        .activity-dot.completed {
+            background: #00b894;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-content p {
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .activity-time {
+            font-size: 0.7rem;
+            color: #666;
+        }
+        
+        .activity-value {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .achievements-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .achievement-mini {
+            text-align: center;
+        }
+        
+        .achievement-mini i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.3rem;
+        }
+        
+        .achievement-mini span {
+            font-size: 0.8rem;
+            color: #666;
+            display: block;
+        }
+        
+        .goals-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            color: white;
+            margin-top: 2rem;
+        }
+        
+        .goals-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .goals-header h3 {
+            font-size: 1.3rem;
+        }
+        
+        .goal-progress {
+            margin-bottom: 1.5rem;
+        }
+        
+        .goal-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .goal-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .goal-fill {
+            height: 100%;
+            background: white;
+            width: 0%;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-page {
+                padding: 80px 1rem 2rem;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-card {
+                padding: 2rem;
+            }
+            
+            .welcome-content h2 {
+                font-size: 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .stat-info h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <img src="../images/logo.png" alt="MangaWebPH Logo" class="circular-logo">
+                    <span class="logo-text">MangaWebPH</span>
+                </div>
+            </div>
+            
+            <div class="nav-center" id="navLinks">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="manga.html" class="nav-link">Manga</a>
+                <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+                <a href="tasks.html" class="nav-link">Tasks</a>
+                <a href="donate.html" class="nav-link">Donate</a>
+            </div>
+            
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="user-menu" id="userMenu">
+                    <img src="../images/default-avatar.png" alt="User" class="user-avatar circular-avatar" id="userAvatar">
+                    <div class="user-dropdown">
+                        <a href="profile.html">Profile</a>
+                        <a href="dashboard.html" class="active">Dashboard</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
+                </div>
+                <button class="burger-menu" id="burgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="../index.html" class="mobile-link">Home</a>
+        <a href="manga.html" class="mobile-link">Manga</a>
+        <a href="leaderboard.html" class="mobile-link">Leaderboard</a>
+        <a href="tasks.html" class="mobile-link">Tasks</a>
+        <a href="donate.html" class="mobile-link">Donate</a>
+        <a href="profile.html" class="mobile-link">Profile</a>
+        <a href="dashboard.html" class="mobile-link">Dashboard</a>
+    </div>
+
+    <main class="dashboard-page">
+        <div class="dashboard-container">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <h1>Dashboard</h1>
+                <div class="date-display" id="currentDate"></div>
+            </div>
+            
+            <!-- Welcome Card -->
+            <div class="welcome-card">
+                <div class="welcome-content">
+                    <h2>Welcome back, <span id="userName">Reader</span>! 👋</h2>
+                    <p>Your reading journey continues. You're on a <strong id="userStreak">0</strong> day streak!</p>
+                    <div class="streak-badge">
+                        <i class="fas fa-fire"></i>
+                        <span>Current Streak: <strong id="streakCount">0</strong> days</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalChapters">0</h3>
+                        <p>Chapters Read</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalManga">0</h3>
+                        <p>Manga Finished</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="readingTime">0</h3>
+                        <p>Hours Reading</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="achievementCount">0</h3>
+                        <p>Achievements</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Continue Reading Section -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-play-circle"></i> Continue Reading</h3>
+                        <a href="history.html" class="view-all-link">View All <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="continue-reading-list" id="continueReadingList">
+                        <!-- Will be populated by JS -->
+                        <div style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-spinner fa-spin"></i> Loading...
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Today's Activity -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-line"></i> Today's Activity</h3>
+                    </div>
+                    <div class="activity-list" id="todayActivity">
+                        <!-- Will be populated by JS -->
+                        <div style="text-align: center; padding: 1rem;">
+                            <i class="fas fa-spinner fa-spin"></i> Loading...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recommendations Section -->
+            <div class="dashboard-card" style="margin-bottom: 2rem;">
+                <div class="card-header">
+                    <h3><i class="fas fa-star"></i> Recommended For You</h3>
+                    <a href="manga.html" class="view-all-link">More <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="recommendations-grid" id="recommendationsGrid">
+                    <!-- Will be populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Goals Section -->
+            <div class="goals-section">
+                <div class="goals-header">
+                    <h3><i class="fas fa-bullseye"></i> Reading Goals</h3>
+                    <button class="btn-secondary" onclick="setGoal()">Set New Goal</button>
+                </div>
+                
+                <div class="goal-progress">
+                    <div class="goal-label">
+                        <span>Monthly Goal: <span id="monthlyGoal">0</span> chapters</span>
+                        <span id="monthlyProgress">0/0</span>
+                    </div>
+                    <div class="goal-bar">
+                        <div class="goal-fill" id="monthlyGoalFill" style="width: 0%;"></div>
+                    </div>
+                </div>
+                
+                <div class="goal-progress">
+                    <div class="goal-label">
+                        <span>Yearly Goal: <span id="yearlyGoal">0</span> manga</span>
+                        <span id="yearlyProgress">0/0</span>
+                    </div>
+                    <div class="goal-bar">
+                        <div class="goal-fill" id="yearlyGoalFill" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Achievements -->
+            <div class="dashboard-card" style="margin-top: 2rem;">
+                <div class="card-header">
+                    <h3><i class="fas fa-medal"></i> Recent Achievements</h3>
+                    <a href="achievements.html" class="view-all-link">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="achievements-preview" id="recentAchievements">
+                    <!-- Will be populated by JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Components -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <!-- ... chatbot content ... -->
+    </div>
+    
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/chatbot.js"></script>
+	<script src="../js/tasks.js"></script>
+    <script src="../js/pages/dashboard.js"></script>
+    
+</body>
+</html>

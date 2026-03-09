@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under Maintenance - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+   <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        .maintenance-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(108,92,231,0.1) 0%, rgba(0,210,211,0.1) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .maintenance-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('images/mangawebph.png') no-repeat center center;
+            background-size: cover;
+            opacity: 0.05;
+        }
+        
+        .maintenance-container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 30px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        body.night-mode .maintenance-container {
+            background: var(--card-bg-dark);
+        }
+        
+        .maintenance-icon {
+            font-size: 5rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            animation: spin 4s linear infinite;
+            text-align: center;
+        }
+        
+        .maintenance-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+        
+        .maintenance-message {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        
+        .countdown-section {
+            background: rgba(108,92,231,0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .countdown-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #666;
+            text-align: center;
+        }
+        
+        .countdown-timer {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .countdown-block {
+            background: white;
+            border-radius: 15px;
+            padding: 1rem;
+            min-width: 80px;
+            text-align: center;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+        }
+        
+        body.night-mode .countdown-block {
+            background: var(--card-bg-dark);
+        }
+        
+        .countdown-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+        
+        .countdown-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+        
+        .progress-section {
+            margin: 2rem 0;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: rgba(108,92,231,0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .update-list {
+            text-align: left;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(108,92,231,0.05);
+            border-radius: 15px;
+        }
+        
+        .update-list h3 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .update-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .update-list li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+        }
+        
+        .update-list li i {
+            color: #00b894;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .social-link {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(108,92,231,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .social-link:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-5px);
+        }
+        
+        .notify-form {
+            display: flex;
+            gap: 0.5rem;
+            margin: 2rem 0;
+        }
+        
+        .notify-form input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(108,92,231,0.2);
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+        
+        body.night-mode .notify-form input {
+            color: white;
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        .notify-form input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        .notify-form button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .notify-form button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(108,92,231,0.3);
+        }
+        
+        .notify-form button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+        
+        .floating-element {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        .element1 {
+            top: 10%;
+            left: 10%;
+            animation: float 12s ease-in-out infinite;
+        }
+        
+        .element2 {
+            bottom: 20%;
+            right: 15%;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+        
+        .element3 {
+            top: 30%;
+            right: 25%;
+            animation: float 10s ease-in-out infinite 2s;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .maintenance-container {
+                padding: 2rem;
+            }
+            
+            .maintenance-title {
+                font-size: 2rem;
+            }
+            
+            .countdown-timer {
+                flex-wrap: wrap;
+            }
+            
+            .countdown-block {
+                min-width: 60px;
+                padding: 0.8rem;
+            }
+            
+            .countdown-number {
+                font-size: 1.8rem;
+            }
+            
+            .notify-form {
+                flex-direction: column;
+            }
+            
+            .notify-form button {
+                width: 100%;
+            }
+        }
+        
+        .maintenance-ended {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .maintenance-ended h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #00b894;
+        }
+        
+        .maintenance-ended p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="maintenance-page">
+        <!-- Floating decorative elements -->
+        <div class="floating-element element1"></div>
+        <div class="floating-element element2"></div>
+        <div class="floating-element element3"></div>
+        
+        <div class="maintenance-container">
+            <div class="maintenance-icon">
+                <i class="fas fa-tools"></i>
+            </div>
+            
+            <h1 class="maintenance-title">Under Maintenance</h1>
+            
+            <p class="maintenance-message">
+                We're currently upgrading our systems to bring you an even better reading experience. 
+                Please bear with us as we make things better!
+            </p>
+            
+            <!-- Countdown Timer -->
+            <div class="countdown-section">
+                <div class="countdown-title">Estimated time until we're back:</div>
+                <div class="countdown-timer" id="countdown">
+                    <div class="countdown-block">
+                        <div class="countdown-number" id="hours">02</div>
+                        <div class="countdown-label">Hours</div>
+                    </div>
+                    <div class="countdown-block">
+                        <div class="countdown-number" id="minutes">30</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-block">
+                        <div class="countdown-number" id="seconds">15</div>
+                        <div class="countdown-label">Seconds</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span>Maintenance Progress</span>
+                    <span id="progressPercentage">75%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%;"></div>
+                </div>
+            </div>
+            
+            <!-- What's New -->
+            <div class="update-list">
+                <h3><i class="fas fa-star" style="color: gold;"></i> What's New?</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> Faster chapter loading</li>
+                    <li><i class="fas fa-check-circle"></i> New avatar frames (Day 100+!)</li>
+                    <li><i class="fas fa-check-circle"></i> Improved reading experience</li>
+                    <li><i class="fas fa-check-circle"></i> Bug fixes and performance updates</li>
+                    <li><i class="fas fa-check-circle"></i> New achievements system</li>
+                </ul>
+            </div>
+            
+            <!-- Social Links -->
+            <div class="social-links">
+                <a href="https://www.facebook.com/Zawn.Loid.SuwaRizz" target="_blank" class="social-link">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-discord"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-telegram"></i>
+                </a>
+            </div>
+            
+            <!-- Notify Form -->
+            <div class="notify-form">
+                <input type="email" id="notifyEmail" placeholder="Get notified when we're back">
+                <button class="notify-btn">Notify Me</button>
+            </div>
+            
+            <!-- Back Link -->
+            <div style="text-align: center;">
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Try to go back home
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Back to Top Button (not needed on maintenance page but included for consistency) -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+     
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/pages/maintenance.js"></script>
+</body>
+</html>

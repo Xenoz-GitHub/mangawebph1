@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Manga Library - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- FIXED: CSS paths should be relative to current file location -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        .library-page {
+            padding: 100px 2rem 4rem;
+            min-height: 100vh;
+        }
+        
+        .page-header {
+            max-width: 1400px;
+            margin: 0 auto 3rem;
+            text-align: center;
+        }
+        
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .search-section {
+            max-width: 800px;
+            margin: 2rem auto;
+            display: flex;
+            gap: 1rem;
+            position: relative;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 1.2rem 1.5rem;
+            border: 2px solid rgba(108,92,231,0.2);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        body.night-mode .search-input {
+            background: var(--card-bg-dark);
+            color: white;
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(108,92,231,0.1);
+        }
+        
+        .search-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .filter-section {
+            max-width: 1400px;
+            margin: 2rem auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .filter-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid rgba(108,92,231,0.2);
+            border-radius: 30px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        body.night-mode .filter-btn {
+            color: white;
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-color: transparent;
+        }
+        
+        .filter-btn i {
+            font-size: 0.9rem;
+        }
+        
+        .sort-section {
+            max-width: 1400px;
+            margin: 1rem auto 2rem;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .sort-select {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid rgba(108,92,231,0.2);
+            border-radius: 30px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        
+        body.night-mode .sort-select {
+            background: var(--card-bg-dark);
+            color: white;
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        .manga-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 0;
+            position: relative;
+        }
+        
+        .manga-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            cursor: pointer;
+            position: relative;
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+        
+        body.night-mode .manga-card {
+            background: var(--card-bg-dark);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        
+        .manga-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(108,92,231,0.3);
+        }
+        
+        .manga-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .manga-card:hover img {
+            transform: scale(1.1);
+        }
+        
+        /* FIXED: Moved manga-actions inside manga-card in the structure */
+        .manga-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2;
+        }
+
+        .quick-download-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .manga-card:hover .quick-download-btn {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .quick-download-btn:hover {
+            transform: scale(1.1) !important;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        .quick-download-btn.downloaded {
+            background: #636e72;
+            cursor: default;
+        }
+        
+        .manga-info {
+            padding: 1.5rem;
+        }
+        
+        .manga-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .manga-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .manga-rating {
+            color: gold;
+        }
+        
+        .manga-chapter {
+            background: rgba(108,92,231,0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 4rem;
+        }
+        
+        .page-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid rgba(108,92,231,0.2);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+        
+        body.night-mode .page-btn {
+            color: white;
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        .page-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-color: transparent;
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .page-info {
+            font-size: 1.1rem;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 4rem;
+            grid-column: 1/-1;
+        }
+        
+        .no-results i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .loading-skeleton {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2rem;
+            width: 100%;
+        }
+        
+        .skeleton-card {
+            background: #f0f0f0;
+            border-radius: 20px;
+            height: 350px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        body.night-mode .skeleton-card {
+            background: #2a2a3a;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .library-page {
+                padding: 80px 1rem 2rem;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .search-section {
+                flex-direction: column;
+            }
+            
+            .search-btn {
+                width: 100%;
+                border-radius: 30px;
+            }
+            
+            .filter-section {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                padding-bottom: 1rem;
+            }
+            
+            .filter-btn {
+                flex-shrink: 0;
+            }
+            
+            .manga-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .manga-card img {
+                height: 200px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .manga-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <img src="../images/logo.png" alt="MangaWebPH Logo" class="circular-logo">
+                    <span class="logo-text">MangaWebPH</span>
+                </div>
+            </div>
+            
+            <div class="nav-center" id="navLinks">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="manga.html" class="nav-link active">Manga</a>
+                <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+                <a href="tasks.html" class="nav-link">Tasks</a>
+                <a href="donate.html" class="nav-link">Donate</a>
+            </div>
+            
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="auth-buttons" id="authButtons">
+                    <a href="signin.html" class="btn-secondary">Sign In</a>
+                    <a href="signup.html" class="btn-primary">Sign Up</a>
+                </div>
+                <div class="user-menu hidden" id="userMenu">
+                    <img src="../images/default-avatar.png" alt="User" class="user-avatar circular-avatar" id="userAvatar">
+                    <div class="user-dropdown">
+                        <a href="profile.html">Profile</a>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="downloads.html">Downloads</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
+                </div>
+                <button class="burger-menu" id="burgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="../index.html" class="mobile-link">Home</a>
+        <a href="manga.html" class="mobile-link">Manga</a>
+        <a href="leaderboard.html" class="mobile-link">Leaderboard</a>
+        <a href="tasks.html" class="mobile-link">Tasks</a>
+        <a href="donate.html" class="mobile-link">Donate</a>
+        <a href="profile.html" class="mobile-link">Profile</a>
+        <a href="dashboard.html" class="mobile-link">Dashboard</a>
+        <a href="downloads.html" class="mobile-link">Downloads</a>
+    </div>
+
+    <!-- Main Content -->
+    <main class="library-page">
+        <div class="page-header">
+            <h1>Manga Library</h1>
+            <p>Discover thousands of manga titles</p>
+        </div>
+		
+        <!-- Search Section -->
+        <div class="search-section">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search by title, author, genre..." value="">
+            <button class="search-btn" id="searchBtn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        
+        <!-- Filter Section -->
+        <div class="filter-section" id="filterSection">
+            <button class="filter-btn active" data-filter="all">
+                <i class="fas fa-globe"></i> All
+            </button>
+            <button class="filter-btn" data-filter="action">
+                <i class="fas fa-fist-raised"></i> Action
+            </button>
+            <button class="filter-btn" data-filter="adventure">
+                <i class="fas fa-mountain"></i> Adventure
+            </button>
+            <button class="filter-btn" data-filter="comedy">
+                <i class="fas fa-laugh"></i> Comedy
+            </button>
+            <button class="filter-btn" data-filter="drama">
+                <i class="fas fa-mask"></i> Drama
+            </button>
+            <button class="filter-btn" data-filter="fantasy">
+                <i class="fas fa-dragon"></i> Fantasy
+            </button>
+            <button class="filter-btn" data-filter="romance">
+                <i class="fas fa-heart"></i> Romance
+            </button>
+            <button class="filter-btn" data-filter="sci-fi">
+                <i class="fas fa-robot"></i> Sci-Fi
+            </button>
+            <button class="filter-btn" data-filter="slice-of-life">
+                <i class="fas fa-home"></i> Slice of Life
+            </button>
+            <button class="filter-btn" data-filter="horror">
+                <i class="fas fa-ghost"></i> Horror
+            </button>
+            <button class="filter-btn" data-filter="mystery">
+                <i class="fas fa-search"></i> Mystery
+            </button>
+        </div>
+        
+        <!-- Sort Section -->
+        <div class="sort-section">
+            <span>Sort by:</span>
+            <select class="sort-select" id="sortSelect">
+                <option value="latest">Latest Updates</option>
+                <option value="popular">Most Popular</option>
+                <option value="rating">Highest Rated</option>
+                <option value="title">Title A-Z</option>
+                <option value="views">Most Viewed</option>
+            </select>
+        </div>
+        
+        <!-- Manga Grid -->
+        <div id="mangaGrid" class="manga-grid">
+            <!-- Loading skeletons - will be replaced by JS -->
+            <div class="loading-skeleton" id="loadingSkeleton">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="page-btn" id="prevPage" disabled>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="page-info" id="pageInfo">Page 1 of 1</span>
+            <button class="page-btn" id="nextPage" disabled>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </main>
+
+    <!-- Floating Components -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header" id="chatbotHeader">
+            <img src="../images/chatbot-icon.png" alt="Chatbot" class="circular-avatar">
+            <span>Manga Assistant</span>
+            <button class="chatbot-toggle" id="chatbotToggle">
+                <i class="fas fa-chevron-up"></i>
+            </button>
+        </div>
+        <div class="chatbot-body" id="chatbotBody">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <div class="message-content">
+                        <p>Hi! Looking for a specific manga? I can help you find it!</p>
+                    </div>
+                    <span class="message-time">Just now</span>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Search for manga...">
+                <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Scripts - FIXED: All paths corrected -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/chatbot.js"></script>
+    <script src="../js/pages/manga.js"></script>
+    
+</body>
+</html>

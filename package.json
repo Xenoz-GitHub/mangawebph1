@@ -1,0 +1,20 @@
+{
+  "name": "mangawebph",
+  "version": "1.0.0",
+  "description": "MangaWebPH - Your Ultimate Manga Reading Platform",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site, no build required'",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "resend": "^4.0.0"
+  },
+  "devDependencies": {
+    "vercel": "^34.0.0"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}

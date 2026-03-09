@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        .categories-page {
+            padding: 100px 2rem 4rem;
+            min-height: 100vh;
+        }
+        
+        .categories-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        body.night-mode .category-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px rgba(108,92,231,0.2);
+        }
+        
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .category-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .category-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .category-card:hover .category-icon {
+            transform: scale(1.1) rotate(360deg);
+        }
+        
+        .category-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-count {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .category-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .featured-section {
+            margin-top: 4rem;
+        }
+        
+        .featured-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .genre-cloud {
+            background: white;
+            border-radius: 30px;
+            padding: 3rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        body.night-mode .genre-cloud {
+            background: var(--card-bg-dark);
+        }
+        
+        .genre-tag {
+            padding: 0.8rem 1.8rem;
+            background: rgba(108,92,231,0.1);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .genre-tag:hover {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .genre-tag.large {
+            font-size: 1.3rem;
+            padding: 1rem 2.5rem;
+        }
+        
+        .genre-tag.medium {
+            font-size: 1.1rem;
+            padding: 0.9rem 2rem;
+        }
+        
+        .stats-section {
+            margin-top: 4rem;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        body.night-mode .stat-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        
+        .loading-skeleton {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .skeleton-card {
+            height: 250px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 20px;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .categories-page {
+                padding: 80px 1rem 2rem;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .genre-cloud {
+                padding: 1.5rem;
+            }
+            
+            .genre-tag {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            
+            .genre-tag.large {
+                font-size: 1.1rem;
+                padding: 0.8rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <img src="../images/logo.png" alt="MangaWebPH Logo" class="circular-logo">
+                    <span class="logo-text">MangaWebPH</span>
+                </div>
+            </div>
+            
+            <div class="nav-center" id="navLinks">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="manga.html" class="nav-link">Manga</a>
+                <a href="categories.html" class="nav-link active">Categories</a>
+                <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+                <a href="tasks.html" class="nav-link">Tasks</a>
+                <a href="donate.html" class="nav-link">Donate</a>
+            </div>
+            
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="auth-buttons" id="authButtons">
+                    <a href="signin.html" class="btn-secondary">Sign In</a>
+                    <a href="signup.html" class="btn-primary">Sign Up</a>
+                </div>
+                <div class="user-menu hidden" id="userMenu">
+                    <img src="../images/default-avatar.png" alt="User" class="user-avatar circular-avatar" id="userAvatar">
+                    <div class="user-dropdown">
+                        <a href="profile.html">Profile</a>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="favorites.html">Favorites</a>
+                        <a href="collections.html">Collections</a>
+                        <a href="history.html">History</a>
+                        <a href="downloads.html">Downloads</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
+                </div>
+                <button class="burger-menu" id="burgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="../index.html" class="mobile-link">Home</a>
+        <a href="manga.html" class="mobile-link">Manga</a>
+        <a href="categories.html" class="mobile-link">Categories</a>
+        <a href="leaderboard.html" class="mobile-link">Leaderboard</a>
+        <a href="tasks.html" class="mobile-link">Tasks</a>
+        <a href="donate.html" class="mobile-link">Donate</a>
+        <a href="profile.html" class="mobile-link">Profile</a>
+        <a href="dashboard.html" class="mobile-link">Dashboard</a>
+        <a href="favorites.html" class="mobile-link">Favorites</a>
+        <a href="collections.html" class="mobile-link">Collections</a>
+        <a href="history.html" class="mobile-link">History</a>
+        <a href="downloads.html" class="mobile-link">Downloads</a>
+    </div>
+
+    <main class="categories-page">
+        <div class="categories-container">
+            <div class="page-header">
+                <h1>Manga Categories</h1>
+                <p>Explore manga by genre and find your next favorite series</p>
+            </div>
+            
+            <!-- Categories Grid -->
+            <div class="categories-grid" id="categoriesGrid">
+                <div class="loading-skeleton">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </div>
+            
+            <!-- Popular Tags Cloud -->
+            <div class="featured-section">
+                <h2 class="featured-title">Popular Tags</h2>
+                <div class="genre-cloud" id="genreCloud">
+                    <!-- Will be populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Statistics -->
+            <div class="stats-section">
+                <h2>Category Statistics</h2>
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalManga">0</div>
+                        <div class="stat-label">Total Manga</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalCategories">0</div>
+                        <div class="stat-label">Categories</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalGenres">0</div>
+                        <div class="stat-label">Sub-genres</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalViews">0</div>
+                        <div class="stat-label">Total Views</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Components -->
+    <div class="chatbot-container" id="chatbotContainer"><!-- ... --></div>
+    <button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/chatbot.js"></script>
+    <script src="../js/pages/categories.js"></script>
+</body>
+</html>

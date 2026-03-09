@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Offline - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="images/mangawebph.png">
+    <link rel="apple-touch-icon" href="images/mangawebph.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        :root {
+            --primary-color: #6c5ce7;
+            --accent-color: #00d2d3;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+
+        .offline-container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 30px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .offline-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #6c5ce7, #00d2d3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            color: white;
+            font-size: 3rem;
+            box-shadow: 0 10px 20px rgba(108,92,231,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #6c5ce7, #00d2d3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .offline-message {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .wifi-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-radius: 50px;
+            margin-bottom: 30px;
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        .wifi-status i {
+            font-size: 1.2rem;
+        }
+
+        .cached-section {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .cached-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cached-section h3 i {
+            color: #6c5ce7;
+        }
+
+        .cached-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .cached-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .cached-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 10px rgba(108,92,231,0.1);
+        }
+
+        .cached-cover {
+            width: 50px;
+            height: 70px;
+            background: linear-gradient(135deg, #6c5ce7, #00d2d3);
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .cached-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cached-info {
+            flex: 1;
+        }
+
+        .cached-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+        }
+
+        .cached-meta {
+            font-size: 0.8rem;
+            color: #666;
+            display: flex;
+            gap: 10px;
+        }
+
+        .cached-meta i {
+            color: #6c5ce7;
+            width: 14px;
+        }
+
+        .retry-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #6c5ce7, #00d2d3);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .retry-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(108,92,231,0.3);
+        }
+
+        .retry-btn:active {
+            transform: translateY(0);
+        }
+
+        .retry-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .retry-btn:hover i {
+            transform: rotate(180deg);
+        }
+
+        .tips-section {
+            text-align: left;
+            background: #fff3e0;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .tips-section h4 {
+            margin-bottom: 10px;
+            color: #e67e22;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-section ul {
+            list-style: none;
+        }
+
+        .tips-section li {
+            margin-bottom: 8px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .tips-section li i {
+            color: #27ae60;
+            width: 18px;
+        }
+
+        .storage-info {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .storage-info i {
+            color: #6c5ce7;
+            margin-right: 5px;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6c5ce7, #00d2d3);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+        }
+
+        @media (max-width: 480px) {
+            .offline-container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .offline-message {
+                font-size: 1rem;
+            }
+
+            .cached-item {
+                padding: 10px;
+            }
+
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+		
+		.downloads-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.download-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.download-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 10px rgba(108,92,231,0.1);
+}
+
+.download-cover {
+    width: 50px;
+    height: 70px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.download-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.download-info {
+    flex: 1;
+}
+
+.download-info h4 {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+}
+
+.download-progress {
+    font-size: 0.8rem;
+    color: var(--primary);
+}
+
+.download-size {
+    font-size: 0.7rem;
+    color: #666;
+}
+
+.manage-downloads-btn {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.manage-downloads-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(108,92,231,0.3);
+}
+
+.no-downloads {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.no-downloads i {
+    font-size: 2rem;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">
+            <i class="fas fa-wifi-slash"></i>
+        </div>
+
+        <h1>You're Offline</h1>
+        
+        <p class="offline-message">
+            No internet connection detected. Don't worry! You can still access your downloaded manga while we try to reconnect.
+        </p>
+
+        <div class="wifi-status">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>No Internet Connection</span>
+        </div>
+
+<div class="cached-section">
+    <h3><i class="fas fa-download"></i> Your Downloads</h3>
+    <div class="downloads-list" id="offlineDownloads">
+        <!-- Dynamically populated -->
+    </div>
+    <a href="pages/downloads.html" class="manage-downloads-btn">
+        <i class="fas fa-cog"></i> Manage Downloads
+    </a>
+</div>
+
+        <!-- Retry Button -->
+        <button class="retry-btn" id="retryBtn" onclick="retryConnection()">
+            <i class="fas fa-sync-alt"></i>
+            Retry Connection
+        </button>
+
+        <!-- Tips Section -->
+        <div class="tips-section">
+            <h4>
+                <i class="fas fa-lightbulb"></i>
+                Quick Tips
+            </h4>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Check your Wi-Fi or mobile data</li>
+                <li><i class="fas fa-check-circle"></i> Toggle Airplane mode on/off</li>
+                <li><i class="fas fa-check-circle"></i> Restart your router</li>
+                <li><i class="fas fa-check-circle"></i> Download chapters when online for offline reading</li>
+            </ul>
+        </div>
+
+        <!-- Home Link -->
+        <div style="margin-top: 20px;">
+            <a href="index.html" style="color: #6c5ce7; text-decoration: none; font-size: 0.9rem;">
+                <i class="fas fa-arrow-left"></i> Try to go back home
+            </a>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+     
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/pages/offline.js"></script>
+</body>
+</html>

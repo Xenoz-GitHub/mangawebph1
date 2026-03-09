@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Manga - MangaWebPH Admin</title>
+    <link rel="icon" type="image/png" href="../../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <!-- Main CSS (always first) -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/mobile.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    
+    <!-- Admin CSS (add this) -->
+    <link rel="stylesheet" href="../../css/admin.css">
+    <style>
+        .import-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .search-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        body.night-mode .search-section {
+            background: var(--card-bg-dark);
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+        
+        .search-box button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .filters select {
+            padding: 0.75rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--border-radius);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .manga-result {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        body.night-mode .manga-result {
+            background: var(--card-bg-dark);
+        }
+        
+        .manga-result:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .manga-result img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .manga-info {
+            padding: 1rem;
+        }
+        
+        .manga-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .manga-chapters {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+        
+        .import-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .import-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+        
+        .loading i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+        
+        .selected-manga {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        body.night-mode .selected-manga {
+            background: var(--card-bg-dark);
+        }
+        
+        .manga-details {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .manga-details img {
+            width: 100%;
+            border-radius: var(--border-radius);
+        }
+        
+        .chapters-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+        }
+        
+        .chapter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .chapter-item:last-child {
+            border-bottom: none;
+        }
+        
+        .chapter-checkbox {
+            margin-right: 1rem;
+        }
+        
+        .import-progress {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: var(--border-radius);
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar (same as admin index) -->
+        <div class="admin-sidebar">
+            <!-- ... sidebar content ... -->
+        </div>
+        
+        <!-- Main Content -->
+        <div class="admin-main">
+            <div class="admin-header">
+                <h1 class="admin-title">Import Manga from MangaDex</h1>
+                <a href="index.html" class="btn-secondary">Back to Dashboard</a>
+            </div>
+            
+            <div class="import-container">
+                <!-- Search Section -->
+                <div class="search-section">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Search manga to import...">
+                        <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
+                    </div>
+                    
+                    <div class="filters">
+                        <select id="demographic">
+                            <option value="">All Demographics</option>
+                            <option value="shounen">Shounen</option>
+                            <option value="shoujo">Shoujo</option>
+                            <option value="seinen">Seinen</option>
+                            <option value="josei">Josei</option>
+                            <option value="kids">Kids</option>
+                        </select>
+                        
+                        <select id="status">
+                            <option value="">All Status</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="completed">Completed</option>
+                            <option value="hiatus">Hiatus</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        
+                        <select id="sort">
+                            <option value="relevance">Relevance</option>
+                            <option value="rating">Rating</option>
+                            <option value="follows">Follows</option>
+                            <option value="title">Title</option>
+                            <option value="createdAt">Latest</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Search Results -->
+                <div id="resultsContainer">
+                    <div class="results-grid" id="resultsGrid"></div>
+                </div>
+                
+                <!-- Selected Manga Details -->
+                <div class="selected-manga" id="selectedManga" style="display: none;">
+                    <h2>Import Manga</h2>
+                    <div class="manga-details" id="mangaDetails"></div>
+                    
+                    <h3>Select Chapters to Import</h3>
+                    <div class="chapters-list" id="chaptersList"></div>
+                    
+                    <div style="margin-top: 2rem; text-align: right;">
+                        <button class="btn-secondary" id="selectAllBtn">Select All</button>
+                        <button class="btn-primary" id="importBtn">
+                            <i class="fas fa-download"></i> Import Selected Chapters
+                        </button>
+                    </div>
+                    
+                    <div class="import-progress" id="importProgress" style="display: none;">
+                        <h4>Importing...</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <p id="progressText">0/0 chapters imported</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+   
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/supabase.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/pages/admin/admin-manga-import.js"></script>
+</body>
+</html>

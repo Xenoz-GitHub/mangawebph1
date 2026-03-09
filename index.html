@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>MangaWebPH - Your Ultimate Manga Destination</title>
+    <meta name="description" content="Read the latest manga online for free at MangaWebPH. Discover thousands of manga titles with daily updates.">
+    <meta name="keywords" content="manga, manhwa, webtoon, read manga online, mangawebph">
+    <meta property="og:title" content="MangaWebPH">
+    <meta property="og:description" content="Your Ultimate Manga Reading Platform">
+    <meta property="og:image" content="images/mangawebph.png">
+    <meta property="og:url" content="https://mangawebph.com">
+    <link rel="icon" type="image/png" href="images/mangawebph.png">
+    <link rel="apple-touch-icon" href="images/mangawebph.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mobile.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        /* Hero Section with Luffy Image */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(108,92,231,0.1) 0%, rgba(0,210,211,0.1) 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('images/mangawebph.png') no-repeat center center;
+            background-size: cover;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-content {
+            animation: slideInLeft 1s ease;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .hero-image-wrapper {
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0 20px 40px rgba(108, 92, 231, 0.3);
+            border: 5px solid white;
+            transition: transform 0.3s ease;
+        }
+
+        .hero-image:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            filter: blur(20px);
+            opacity: 0.3;
+        }
+
+        .element1 {
+            top: 20%;
+            left: 10%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .element2 {
+            bottom: 30%;
+            right: 15%;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        .element3 {
+            top: 40%;
+            right: 25%;
+            animation: float 7s ease-in-out infinite 1s;
+        }
+
+        /* Featured Section */
+        .featured-section {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        body.night-mode .featured-section {
+            background: transparent;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 3px;
+        }
+
+        /* Manga Grid */
+        .manga-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .manga-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            cursor: pointer;
+            position: relative;
+        }
+
+        body.night-mode .manga-card {
+            background: var(--card-bg-dark);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .manga-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(108, 92, 231, 0.3);
+        }
+
+        .manga-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .manga-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .manga-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .manga-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .manga-info {
+            padding: 1.5rem;
+        }
+
+        .manga-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .manga-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+        .stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 5rem 2rem;
+            text-align: center;
+            background: url('images/mangawebph.png') no-repeat center center;
+            background-size: cover;
+            position: relative;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta-content h2 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-content p {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        /* Animations */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-image-wrapper {
+                order: -1;
+            }
+
+            .hero-image {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <img src="images/logo.png" alt="MangaWebPH Logo" class="circular-logo">
+                    <span class="logo-text">MangaWebPH</span>
+                </div>
+            </div>
+            
+            <div class="nav-center" id="navLinks">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="pages/manga.html" class="nav-link">Manga</a>
+                <a href="pages/leaderboard.html" class="nav-link">Leaderboard</a>
+                <a href="pages/tasks.html" class="nav-link">Tasks</a>
+                <a href="pages/donate.html" class="nav-link">Donate</a>
+            </div>
+            
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="auth-buttons" id="authButtons">
+                    <a href="pages/signin.html" class="btn-secondary">Sign In</a>
+                    <a href="pages/signup.html" class="btn-primary">Sign Up</a>
+                </div>
+                <div class="user-menu hidden" id="userMenu">
+                    <img src="images/default-avatar.png" alt="User" class="user-avatar circular-avatar" id="userAvatar">
+                    <div class="user-dropdown">
+                        <a href="pages/profile.html">Profile</a>
+                        <a href="pages/dashboard.html">Dashboard</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
+                </div>
+                <button class="burger-menu" id="burgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html" class="mobile-link">Home</a>
+        <a href="pages/manga.html" class="mobile-link">Manga</a>
+        <a href="pages/leaderboard.html" class="mobile-link">Leaderboard</a>
+        <a href="pages/tasks.html" class="mobile-link">Tasks</a>
+        <a href="pages/donate.html" class="mobile-link">Donate</a>
+        <a href="pages/profile.html" class="mobile-link">Profile</a>
+        <a href="pages/dashboard.html" class="mobile-link">Dashboard</a>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section with Luffy -->
+        <section class="hero">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <h1>Discover Your Next Adventure</h1>
+                    <p>Join millions of readers and explore thousands of manga titles. Start your journey today!</p>
+                    <div class="hero-buttons">
+                        <a href="pages/manga.html" class="btn-primary pulse-animation">
+                            <i class="fas fa-book-open"></i> Start Reading
+                        </a>
+                        <a href="#featured" class="btn-secondary">
+                            <i class="fas fa-compass"></i> Explore
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-image-wrapper">
+                    <img src="images/luffy.png" alt="Luffy" class="hero-image">
+                    <div class="floating-elements">
+                        <div class="floating-element element1"></div>
+                        <div class="floating-element element2"></div>
+                        <div class="floating-element element3"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalManga">10,000+</div>
+                    <div class="stat-label">Manga Titles</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalUsers">50,000+</div>
+                    <div class="stat-label">Active Readers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalChapters">100,000+</div>
+                    <div class="stat-label">Chapters</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="dailyReads">5,000+</div>
+                    <div class="stat-label">Daily Reads</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Manga -->
+        <section class="featured-section" id="featured">
+            <h2 class="section-title">Featured Manga</h2>
+            <div class="manga-grid" id="featuredManga"></div>
+        </section>
+
+        <!-- Continue Reading -->
+        <section class="featured-section" id="continueSection" style="display: none;">
+            <h2 class="section-title">Continue Reading</h2>
+            <div class="manga-grid" id="continueReadingGrid"></div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2>Ready to Start Reading?</h2>
+                <p>Join our community today and get access to thousands of manga titles.</p>
+                <div class="cta-buttons">
+                    <a href="pages/signup.html" class="btn-primary">Sign Up Now</a>
+                    <a href="pages/manga.html" class="btn-secondary">Browse Manga</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="logo">
+                    <img src="images/logo.png" alt="MangaWebPH" class="circular-logo">
+                    <span>MangaWebPH</span>
+                </div>
+                <p>Your ultimate manga reading platform with thousands of titles.</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/Zawn.Loid.SuwaRizz" target="_blank" class="social-icon">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="pages/manga.html">Manga Library</a>
+                <a href="pages/leaderboard.html">Leaderboard</a>
+                <a href="pages/tasks.html">Daily Tasks</a>
+                <a href="pages/donate.html">Support Us</a>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <a href="pages/contact.html">Contact Us</a>
+                <a href="pages/privacy.html">Privacy Policy</a>
+                <a href="pages/terms.html">Terms of Service</a>
+                <a href="pages/faq.html">FAQ</a>
+            </div>
+            <div class="footer-section">
+                <h4>Newsletter</h4>
+                <p>Get updates on new chapters</p>
+                <form class="newsletter-form" id="newsletterForm">
+                    <input type="email" placeholder="Your email" required>
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 MangaWebPH. All rights reserved. Made with ❤️ for manga lovers.</p>
+        </div>
+    </footer>
+
+    <!-- Floating Chatbot -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header" id="chatbotHeader">
+            <img src="images/chatbot-icon.png" alt="Chatbot" class="circular-avatar">
+            <span>Manga Assistant</span>
+            <button class="chatbot-toggle" id="chatbotToggle">
+                <i class="fas fa-chevron-up"></i>
+            </button>
+        </div>
+        <div class="chatbot-body" id="chatbotBody">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <div class="message-content">
+                        <p>Hi! I'm your Manga Assistant. How can I help you today?</p>
+                    </div>
+                    <span class="message-time">Just now</span>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type your message...">
+                <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Admin Notification -->
+    <div class="admin-notification" id="adminNotification">
+        <div class="notification-content">
+            <i class="fas fa-bell"></i>
+            <span id="notificationMessage"></span>
+            <button class="close-notification"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/tasks.js"></script>
+    <script src="js/pages/home.js"></script>
+
+</body>
+</html>

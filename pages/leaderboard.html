@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        .leaderboard-page {
+            padding: 100px 2rem 4rem;
+            min-height: 100vh;
+        }
+        
+        .leaderboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .leaderboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .leaderboard-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .leaderboard-header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        .leaderboard-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .leaderboard-tab {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            background: white;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+        }
+        
+        body.night-mode .leaderboard-tab {
+            background: var(--card-bg-dark);
+            color: white;
+        }
+        
+        .leaderboard-tab:hover,
+        .leaderboard-tab.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .leaderboard-card {
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        body.night-mode .leaderboard-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .top-three {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 2rem;
+            margin-bottom: 4rem;
+            padding: 2rem;
+        }
+        
+        .top-user {
+            text-align: center;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .top-user.first {
+            animation-delay: 0s;
+        }
+        
+        .top-user.second {
+            animation-delay: 0.2s;
+        }
+        
+        .top-user.third {
+            animation-delay: 0.4s;
+        }
+        
+        .rank-badge {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: white;
+            z-index: 1;
+        }
+        
+        .first .rank-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            box-shadow: 0 0 20px gold;
+        }
+        
+        .second .rank-badge {
+            background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+            box-shadow: 0 0 20px silver;
+        }
+        
+        .third .rank-badge {
+            background: linear-gradient(135deg, #CD7F32, #8B4513);
+            box-shadow: 0 0 20px #CD7F32;
+        }
+        
+        .top-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 1rem;
+            border: 5px solid white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .first .top-avatar {
+            width: 150px;
+            height: 150px;
+        }
+        
+        .top-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .top-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .first .top-info h3 {
+            font-size: 1.5rem;
+        }
+        
+        .top-value {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .first .top-value {
+            font-size: 1.3rem;
+        }
+        
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .leaderboard-table th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid rgba(108,92,231,0.2);
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .leaderboard-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .leaderboard-table tr {
+            transition: all 0.3s ease;
+        }
+        
+        .leaderboard-table tr:hover {
+            background: rgba(108,92,231,0.05);
+            transform: scale(1.01);
+        }
+        
+        .rank-number {
+            font-weight: bold;
+            width: 50px;
+        }
+        
+        .rank-1 {
+            color: #FFD700;
+        }
+        
+        .rank-2 {
+            color: #C0C0C0;
+        }
+        
+        .rank-3 {
+            color: #CD7F32;
+        }
+        
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-cell img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .user-cell .avatar-frame {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .trend-icon {
+            color: #00b894;
+        }
+        
+        .trend-icon.down {
+            color: #d63031;
+        }
+        
+        .period-selector {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .period-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(108,92,231,0.3);
+            border-radius: 20px;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .period-btn:hover,
+        .period-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: transparent;
+        }
+        
+        @media (max-width: 768px) {
+            .top-three {
+                flex-direction: column;
+                align-items: center;
+                gap: 2rem;
+            }
+            
+            .top-user {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .leaderboard-table {
+                font-size: 0.9rem;
+            }
+            
+            .user-cell {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .leaderboard-tabs {
+                flex-direction: column;
+                padding: 0 1rem;
+            }
+            
+            .leaderboard-tab {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <!-- ... navbar content ... -->
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <!-- ... mobile menu content ... -->
+    </div>
+
+    <main class="leaderboard-page">
+        <div class="leaderboard-container">
+            <div class="leaderboard-header">
+                <h1>Leaderboard</h1>
+                <p>Top readers competing for glory</p>
+            </div>
+            
+            <!-- Period Selector -->
+            <div class="period-selector">
+                <button class="period-btn active" data-period="all">All Time</button>
+                <button class="period-btn" data-period="month">This Month</button>
+                <button class="period-btn" data-period="week">This Week</button>
+                <button class="period-btn" data-period="today">Today</button>
+            </div>
+            
+            <!-- Leaderboard Tabs -->
+            <div class="leaderboard-tabs">
+                <button class="leaderboard-tab active" data-type="chapters">Chapters Read</button>
+                <button class="leaderboard-tab" data-type="streak">Longest Streak</button>
+                <button class="leaderboard-tab" data-type="xp">Total XP</button>
+                <button class="leaderboard-tab" data-type="manga">Manga Finished</button>
+                <button class="leaderboard-tab" data-type="ratings">Most Ratings</button>
+            </div>
+            
+            <!-- Leaderboard Card -->
+            <div class="leaderboard-card">
+                <!-- Top 3 -->
+                <div class="top-three" id="topThree">
+                    <!-- Will be populated by JS -->
+                </div>
+                
+                <!-- Leaderboard Table -->
+                <table class="leaderboard-table" id="leaderboardTable">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>User</th>
+                            <th>Value</th>
+                            <th>Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Will be populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- User Stats Card (for logged in user) -->
+            <div class="dashboard-card" style="margin-top: 2rem;" id="userRankCard">
+                <!-- Will be populated if user is logged in -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Components -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <!-- ... chatbot content ... -->
+    </div>
+    
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+  
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/chatbot.js"></script>
+	<script src="../js/tasks.js"></script>
+    <script src="../js/pages/leaderboard.js"></script>
+</body>
+</html>

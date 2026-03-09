@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievements - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+   <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        .achievements-page {
+            padding: 100px 2rem 4rem;
+            min-height: 100vh;
+        }
+        
+        .achievements-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        body.night-mode .stat-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .achievement-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        body.night-mode .achievement-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .achievement-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px rgba(108,92,231,0.2);
+        }
+        
+        .achievement-card.locked {
+            opacity: 0.6;
+            filter: grayscale(0.5);
+        }
+        
+        .achievement-card.rare {
+            border: 2px solid #9b59b6;
+        }
+        
+        .achievement-card.epic {
+            border: 2px solid #f39c12;
+        }
+        
+        .achievement-card.legendary {
+            border: 2px solid #e74c3c;
+            animation: glow 2s infinite;
+        }
+        
+        .achievement-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .achievement-card.locked .achievement-icon {
+            background: #95a5a6;
+        }
+        
+        .achievement-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .achievement-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .achievement-progress {
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(108,92,231,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .achievement-card.locked .progress-fill {
+            background: #95a5a6;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.3rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .achievement-reward {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 1rem;
+            background: rgba(108,92,231,0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+        }
+        
+        .achievement-reward i {
+            color: gold;
+        }
+        
+        .unlock-date {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.8rem;
+            background: rgba(108,92,231,0.1);
+            border-radius: 20px;
+        }
+        
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid rgba(108,92,231,0.2);
+            border-radius: 30px;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-color: transparent;
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px #e74c3c; }
+            50% { box-shadow: 0 0 30px #e74c3c; }
+        }
+        
+        @media (max-width: 768px) {
+            .achievements-page {
+                padding: 80px 1rem 2rem;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+            
+            .category-filter {
+                flex-direction: column;
+            }
+            
+            .filter-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <!-- ... navbar content ... -->
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <!-- ... mobile menu content ... -->
+    </div>
+
+    <main class="achievements-page">
+        <div class="achievements-container">
+            <div class="page-header">
+                <h1>Achievements</h1>
+                <p>Track your progress and unlock rewards</p>
+            </div>
+            
+            <!-- Stats Overview -->
+            <div class="stats-overview">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalAchievements">0</div>
+                    <div class="stat-label">Total Achievements</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="completedAchievements">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="completionRate">0%</div>
+                    <div class="stat-label">Completion Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalXPEarned">0</div>
+                    <div class="stat-label">Total XP Earned</div>
+                </div>
+            </div>
+            
+            <!-- Category Filter -->
+            <div class="category-filter">
+                <button class="filter-btn active" data-category="all">All</button>
+                <button class="filter-btn" data-category="reading">Reading</button>
+                <button class="filter-btn" data-category="streak">Streak</button>
+                <button class="filter-btn" data-category="social">Social</button>
+                <button class="filter-btn" data-category="special">Special</button>
+                <button class="filter-btn" data-category="rare">Rare</button>
+            </div>
+            
+            <!-- Achievements Grid -->
+            <div class="achievements-grid" id="achievementsGrid">
+                <!-- Will be populated by JS -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Components -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <!-- ... chatbot content ... -->
+    </div>
+    
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/chatbot.js"></script>
+	<script src="../js/tasks.js"></script>
+    <script src="../js/pages/achievements.js"></script>
+    
+</body>
+</html>

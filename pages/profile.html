@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        .profile-page {
+            padding: 100px 2rem 4rem;
+            min-height: 100vh;
+        }
+        
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .profile-cover {
+            height: 300px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 30px 30px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .edit-cover-btn {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .edit-cover-btn:hover {
+            background: var(--primary-color);
+            transform: scale(1.1);
+        }
+        
+        .profile-header {
+            background: white;
+            border-radius: 0 0 30px 30px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        body.night-mode .profile-header {
+            background: var(--card-bg-dark);
+        }
+        
+        .profile-avatar-wrapper {
+            position: absolute;
+            top: -75px;
+            left: 2rem;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .profile-avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .edit-avatar-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .edit-avatar-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .profile-info {
+            margin-left: 180px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .profile-name-section h1 {
+            font-size: 2rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .profile-username {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .profile-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .profile-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(108,92,231,0.05);
+            border-radius: 20px;
+        }
+        
+        .stat-card {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .profile-tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid rgba(108,92,231,0.2);
+            margin: 2rem 0;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text-light);
+            position: relative;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+        
+        body.night-mode .tab-btn {
+            color: var(--text-dark);
+        }
+        
+        .tab-btn:hover {
+            color: var(--primary-color);
+        }
+        
+        .tab-btn.active {
+            color: var(--primary-color);
+        }
+        
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .activity-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        body.night-mode .activity-item {
+            background: var(--card-bg-dark);
+        }
+        
+        .activity-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(108,92,231,0.2);
+        }
+        
+        .activity-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-text {
+            margin-bottom: 0.3rem;
+        }
+        
+        .activity-time {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+        
+        .badge-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        body.night-mode .badge-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .badge-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(108,92,231,0.2);
+        }
+        
+        .badge-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .badge-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .badge-date {
+            font-size: 0.7rem;
+            color: #666;
+        }
+        
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+        
+        .library-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        body.night-mode .library-item {
+            background: var(--card-bg-dark);
+        }
+        
+        .library-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(108,92,231,0.2);
+        }
+        
+        .library-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .library-info {
+            padding: 1rem;
+        }
+        
+        .library-info h4 {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .library-progress {
+            height: 4px;
+            background: rgba(108,92,231,0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        
+        .library-progress-bar {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            width: 0%;
+        }
+        
+        .frame-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .frame-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .frame-modal-content {
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            max-width: 1000px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        body.night-mode .frame-modal-content {
+            background: var(--card-bg-dark);
+        }
+        
+        .frames-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .frame-option {
+            text-align: center;
+            cursor: pointer;
+            padding: 1rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .frame-option:hover {
+            background: rgba(108,92,231,0.1);
+        }
+        
+        .frame-option.selected {
+            border-color: var(--primary-color);
+        }
+        
+        .frame-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .frame-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .frame-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .frame-requirement {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .frame-locked {
+            opacity: 0.5;
+            filter: grayscale(1);
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-avatar-wrapper {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .profile-info {
+                margin-left: 0;
+                margin-top: 80px;
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-name-section {
+                text-align: center;
+            }
+            
+            .profile-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .profile-tabs {
+                padding-bottom: 0;
+            }
+            
+            .tab-btn {
+                padding: 0.8rem 1.2rem;
+            }
+            
+            .library-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <!-- ... navbar content ... -->
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <!-- ... mobile menu content ... -->
+    </div>
+
+    <main class="profile-page">
+        <div class="profile-container">
+            <!-- Profile Cover -->
+            <div class="profile-cover">
+                <img id="profileCover" src="../images/default-cover.jpg" alt="Cover">
+                <button class="edit-cover-btn" id="editCoverBtn" style="display: none;">
+                    <i class="fas fa-camera"></i>
+                </button>
+            </div>
+            
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar-wrapper" id="avatarWrapper">
+                    <img id="profileAvatar" src="../images/default-avatar.png" alt="Avatar" class="profile-avatar">
+                    <button class="edit-avatar-btn" id="editAvatarBtn" style="display: none;">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                </div>
+                
+                <div class="profile-info">
+                    <div class="profile-name-section">
+                        <h1 id="profileName">Loading...</h1>
+                        <div class="profile-username" id="profileUsername">@loading</div>
+                        <div class="profile-badge" id="profileBadge" style="display: none;">
+                            <i class="fas fa-crown"></i> Premium Member
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <button class="btn-primary" id="editProfileBtn" style="display: none;">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
+                        <button class="btn-secondary" id="followBtn">
+                            <i class="fas fa-user-plus"></i> Follow
+                        </button>
+                        <button class="btn-secondary" id="messageBtn">
+                            <i class="fas fa-envelope"></i> Message
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Stats -->
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statChapters">0</div>
+                        <div class="stat-label">Chapters Read</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statManga">0</div>
+                        <div class="stat-label">Manga Finished</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statStreak">0</div>
+                        <div class="stat-label">Day Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statXP">0</div>
+                        <div class="stat-label">Total XP</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statLevel">1</div>
+                        <div class="stat-label">Level</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statFollowers">0</div>
+                        <div class="stat-label">Followers</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="profile-tabs">
+                <button class="tab-btn active" data-tab="activity">Activity</button>
+                <button class="tab-btn" data-tab="library">Library</button>
+                <button class="tab-btn" data-tab="collections">Collections</button>
+                <button class="tab-btn" data-tab="badges">Badges</button>
+                <button class="tab-btn" data-tab="achievements">Achievements</button>
+                <button class="tab-btn" data-tab="following">Following</button>
+            </div>
+            
+            <!-- Activity Tab -->
+            <div class="tab-content active" id="tab-activity">
+                <div class="activity-feed" id="activityFeed">
+                    <div style="text-align: center; padding: 2rem;">
+                        <i class="fas fa-spinner fa-spin"></i> Loading activities...
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Library Tab -->
+            <div class="tab-content" id="tab-library">
+                <div class="library-filters">
+                    <select id="libraryFilter" class="filter-select">
+                        <option value="all">All</option>
+                        <option value="reading">Currently Reading</option>
+                        <option value="completed">Completed</option>
+                        <option value="plan">Plan to Read</option>
+                        <option value="dropped">Dropped</option>
+                    </select>
+                </div>
+                <div class="library-grid" id="libraryGrid">
+                    <!-- Will be populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Collections Tab -->
+            <div class="tab-content" id="tab-collections">
+                <button class="btn-primary" id="createCollectionBtn" style="margin-bottom: 2rem;">
+                    <i class="fas fa-plus"></i> New Collection
+                </button>
+                <div class="collections-grid" id="collectionsGrid">
+                    <!-- Will be populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Badges Tab -->
+            <div class="tab-content" id="tab-badges">
+                <h3>Avatar Frames</h3>
+                <div class="badges-grid" id="framesDisplay"></div>
+                
+                <h3>Earned Badges</h3>
+                <div class="badges-grid" id="badgesGrid"></div>
+            </div>
+            
+            <!-- Achievements Tab -->
+            <div class="tab-content" id="tab-achievements">
+                <div class="achievements-progress">
+                    <div class="progress-card">
+                        <h4>Total Achievements</h4>
+                        <div class="stat-value" id="achievementCount">0/50</div>
+                        <div class="progress-bar" style="height: 10px;">
+                            <div class="progress-fill" id="achievementProgress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="achievements-grid" id="achievementsGrid">
+                    <!-- Will be populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Following Tab -->
+            <div class="tab-content" id="tab-following">
+                <div class="following-tabs">
+                    <button class="sub-tab active" data-subtab="followers">Followers</button>
+                    <button class="sub-tab" data-subtab="following">Following</button>
+                </div>
+                <div id="followersList" class="users-grid"></div>
+                <div id="followingList" class="users-grid" style="display: none;"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Avatar Frame Modal -->
+    <div class="frame-modal" id="frameModal">
+        <div class="frame-modal-content">
+            <h2>Choose Avatar Frame</h2>
+            <p>Unlock frames by completing daily streaks and achievements</p>
+            
+            <div class="frames-grid" id="framesGrid"></div>
+            
+            <div style="text-align: right; margin-top: 2rem;">
+                <button class="btn-secondary" onclick="closeFrameModal()">Cancel</button>
+                <button class="btn-primary" onclick="saveFrame()">Apply Frame</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Components -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <!-- ... chatbot content ... -->
+    </div>
+    
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+     
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/chatbot.js"></script>
+	<script src="../js/tasks.js"></script>
+    <script src="../js/pages/profile.js"></script>
+   
+</body>
+</html>

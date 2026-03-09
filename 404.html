@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | MangaWebPH</title>
+    <link rel="icon" type="image/png" href="images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mobile.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        .error-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(108,92,231,0.1) 0%, rgba(0,210,211,0.1) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .error-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('images/mangawebph.png') no-repeat center center;
+            background-size: cover;
+            opacity: 0.05;
+        }
+        
+        .error-container {
+            max-width: 600px;
+            background: white;
+            border-radius: 30px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        body.night-mode .error-container {
+            background: var(--card-bg-dark);
+        }
+        
+        .error-code {
+            font-size: 8rem;
+            font-weight: bold;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .error-code::after {
+            content: '404';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: blur(20px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .error-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .error-message {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .error-image {
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .error-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+            margin: 2rem 0;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(108,92,231,0.2);
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+        
+        body.night-mode .search-box input {
+            color: white;
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        .search-box input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        .search-box button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box button:hover {
+            transform: scale(1.1);
+        }
+        
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .error-actions .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(108,92,231,0.1);
+            color: var(--primary-color);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(108,92,231,0.3);
+        }
+        
+        .suggestions {
+            margin-top: 2rem;
+        }
+        
+        .suggestions h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .suggestions-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .suggestions-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            background: rgba(108,92,231,0.05);
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .suggestions-links a:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .floating-element {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            filter: blur(30px);
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        .element1 {
+            top: 20%;
+            left: 20%;
+            animation: float 10s ease-in-out infinite;
+        }
+        
+        .element2 {
+            bottom: 30%;
+            right: 25%;
+            animation: float 12s ease-in-out infinite reverse;
+        }
+        
+        .element3 {
+            top: 40%;
+            right: 30%;
+            animation: float 8s ease-in-out infinite 1s;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 6rem;
+            }
+            
+            .error-title {
+                font-size: 1.5rem;
+            }
+            
+            .error-actions {
+                flex-direction: column;
+            }
+            
+            .error-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .search-box button {
+                width: 100%;
+                border-radius: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-page">
+        <!-- Floating Elements -->
+        <div class="floating-element element1"></div>
+        <div class="floating-element element2"></div>
+        <div class="floating-element element3"></div>
+        
+        <div class="error-container">
+            <div class="error-code">404</div>
+            
+            <div class="error-image">
+                <img src="images/luffy.png" alt="Lost Luffy">
+            </div>
+            
+            <h1 class="error-title">Page Not Found</h1>
+            
+            <p class="error-message">
+                Oops! It seems like you've wandered into the Grand Line without a map. 
+                The page you're looking for has either been moved, deleted, or never existed.
+            </p>
+            
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for manga..." value="">
+                <button onclick="searchManga()"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="error-actions">
+                <a href="index.html" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Go Home
+                </a>
+                <a href="pages/manga.html" class="btn btn-secondary">
+                    <i class="fas fa-book-open"></i> Browse Manga
+                </a>
+            </div>
+            
+            <!-- Suggestions -->
+            <div class="suggestions">
+                <h3>Popular Destinations:</h3>
+                <div class="suggestions-links">
+                    <a href="pages/manga.html">Manga Library</a>
+                    <a href="pages/leaderboard.html">Leaderboard</a>
+                    <a href="pages/tasks.html">Daily Tasks</a>
+                    <a href="pages/forum.html">Community Forum</a>
+                    <a href="pages/donate.html">Support Us</a>
+                </div>
+            </div>
+            
+            <!-- Fun Fact -->
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(0,0,0,0.05);">
+                <p style="color: #666; font-size: 0.9rem;">
+                    <i class="fas fa-info-circle" style="color: var(--primary-color);"></i>
+                    Did you know? The One Piece manga has over 1000+ chapters!
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Search function
+        function searchManga() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                window.location.href = `pages/search.html?q=${encodeURIComponent(query)}`;
+            }
+        }
+        
+        // Enter key in search
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchManga();
+            }
+        });
+        
+        // Back to top
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            backToTop.classList.toggle('show', window.scrollY > 300);
+        });
+        
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

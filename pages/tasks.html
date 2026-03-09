@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Tasks - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        .tasks-page {
+            padding: 100px 2rem 4rem;
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgba(108,92,231,0.05) 0%, rgba(0,210,211,0.05) 100%);
+        }
+        
+        .tasks-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .tasks-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .tasks-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .tasks-header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        .streak-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 30px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .streak-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .streak-flame {
+            font-size: 4rem;
+            animation: flicker 2s infinite;
+        }
+        
+        .streak-stats h3 {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+        
+        .streak-number {
+            font-size: 3rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+        
+        .streak-calendar {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .calendar-day {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        
+        .calendar-day.active {
+            background: white;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .task-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        body.night-mode .task-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(108,92,231,0.2);
+        }
+        
+        .task-card.completed {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+        }
+        
+        .task-card.completed .task-progress-bar {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .task-card.completed .task-progress-fill {
+            background: white;
+        }
+        
+        .task-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .task-card.completed .task-icon {
+            background: white;
+            color: var(--primary-color);
+        }
+        
+        .task-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .task-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .task-card.completed .task-description {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .task-progress {
+            margin: 1rem 0;
+        }
+        
+        .task-progress-bar {
+            height: 6px;
+            background: rgba(108,92,231,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .task-progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .task-card.completed .task-progress-fill {
+            background: white;
+        }
+        
+        .task-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .task-reward {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: gold;
+            font-weight: 600;
+        }
+        
+        .task-claim-btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .task-claim-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 5px 10px rgba(108,92,231,0.3);
+        }
+        
+        .task-claim-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .task-claim-btn.claimed {
+            background: #00b894;
+        }
+        
+        .achievements-preview {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        body.night-mode .achievements-preview {
+            background: var(--card-bg-dark);
+        }
+        
+        .achievements-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .achievement-item {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 15px;
+            background: rgba(108,92,231,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .achievement-item:hover {
+            transform: translateY(-5px);
+            background: rgba(108,92,231,0.1);
+        }
+        
+        .achievement-item.locked {
+            opacity: 0.5;
+            filter: grayscale(1);
+        }
+        
+        .achievement-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .achievement-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .achievement-progress {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .xp-boost {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            z-index: 999;
+            animation: slideInRight 0.5s ease;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+        
+        @media (max-width: 768px) {
+            .tasks-page {
+                padding: 80px 1rem 2rem;
+            }
+            
+            .tasks-header h1 {
+                font-size: 2rem;
+            }
+            
+            .streak-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .streak-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .streak-calendar {
+                justify-content: center;
+            }
+            
+            .calendar-day {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+            
+            .tasks-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <!-- ... navbar content ... -->
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <!-- ... mobile menu content ... -->
+    </div>
+
+    <main class="tasks-page">
+        <div class="tasks-container">
+            <div class="tasks-header">
+                <h1>Daily Tasks</h1>
+                <p>Complete tasks, earn rewards, and unlock achievements</p>
+            </div>
+            
+            <!-- Streak Card -->
+            <div class="streak-card" id="streakCard">
+                <div class="streak-info">
+                    <div class="streak-flame">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="streak-stats">
+                        <h3>Current Streak</h3>
+                        <div class="streak-number" id="streakCount">0</div>
+                        <p>days</p>
+                    </div>
+                </div>
+                
+                <div class="streak-calendar" id="streakCalendar">
+                    <!-- Will be populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Tasks Grid -->
+            <div class="tasks-grid" id="tasksGrid">
+                <!-- Will be populated by JS -->
+            </div>
+            
+            <!-- Achievements Preview -->
+            <div class="achievements-preview">
+                <div class="achievements-header">
+                    <h2><i class="fas fa-trophy"></i> Achievements</h2>
+                    <a href="achievements.html" class="view-all-link">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="achievements-grid" id="achievementsPreview">
+                    <!-- Will be populated by JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Components -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <!-- ... chatbot content ... -->
+    </div>
+    
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+   
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/chatbot.js"></script>
+	<script src="../js/tasks.js"></script>
+    <script src="../js/pages/tasks.js"></script>
+
+</body>
+</html>

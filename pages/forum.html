@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Forum - MangaWebPH</title>
+    <link rel="icon" type="image/png" href="../images/mangawebph.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+ <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        .forum-page {
+            padding: 100px 2rem 4rem;
+            min-height: 100vh;
+        }
+        
+        .forum-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .forum-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .forum-title h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .forum-title p {
+            color: #666;
+        }
+        
+        .new-post-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .new-post-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(108,92,231,0.3);
+        }
+        
+        .forum-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        body.night-mode .category-card {
+            background: var(--card-bg-dark);
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(108,92,231,0.2);
+        }
+        
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .category-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-stats {
+            display: flex;
+            gap: 1rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .forum-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(108,92,231,0.2);
+            padding-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .forum-tab {
+            padding: 0.8rem 2rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #666;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .forum-tab:hover {
+            color: var(--primary-color);
+        }
+        
+        .forum-tab.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .forum-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        }
+        
+        .forum-filters {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1.2rem;
+            border: 2px solid rgba(108,92,231,0.2);
+            border-radius: 30px;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-color: transparent;
+        }
+        
+        .forum-search {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .forum-search input {
+            padding: 0.8rem 1.2rem;
+            border: 2px solid rgba(108,92,231,0.2);
+            border-radius: 30px;
+            width: 250px;
+            background: transparent;
+        }
+        
+        body.night-mode .forum-search input {
+            color: white;
+        }
+        
+        .forum-search button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .forum-search button:hover {
+            transform: scale(1.1);
+        }
+        
+        .discussions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .discussion-item {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        body.night-mode .discussion-item {
+            background: var(--card-bg-dark);
+        }
+        
+        .discussion-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 20px rgba(108,92,231,0.2);
+        }
+        
+        .discussion-item.pinned {
+            border-left: 4px solid gold;
+        }
+        
+        .discussion-item.popular {
+            border-left: 4px solid #ff4757;
+        }
+        
+        .discussion-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .discussion-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .discussion-content {
+            flex: 1;
+        }
+        
+        .discussion-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .discussion-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .discussion-badge {
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .badge-pinned {
+            background: gold;
+            color: #000;
+        }
+        
+        .badge-popular {
+            background: #ff4757;
+            color: white;
+        }
+        
+        .badge-new {
+            background: #00b894;
+            color: white;
+        }
+        
+        .discussion-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .discussion-meta i {
+            color: var(--primary-color);
+            margin-right: 0.3rem;
+        }
+        
+        .discussion-excerpt {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+        
+        .discussion-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .discussion-tag {
+            padding: 0.2rem 1rem;
+            background: rgba(108,92,231,0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .discussion-stats {
+            display: flex;
+            gap: 1rem;
+            color: #666;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        
+        .discussion-stats div {
+            text-align: center;
+        }
+        
+        .discussion-stats .stat-value {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 3rem;
+        }
+        
+        .page-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid rgba(108,92,231,0.2);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .page-btn:hover,
+        .page-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-color: transparent;
+        }
+        
+        /* New Post Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        body.night-mode .modal-content {
+            background: var(--card-bg-dark);
+        }
+        
+        .modal-content h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(108,92,231,0.2);
+            border-radius: 15px;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        body.night-mode .form-group input,
+        body.night-mode .form-group select,
+        body.night-mode .form-group textarea {
+            color: white;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        @media (max-width: 768px) {
+            .forum-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .forum-title h1 {
+                font-size: 2rem;
+            }
+            
+            .forum-filters {
+                flex-direction: column;
+            }
+            
+            .forum-search {
+                width: 100%;
+            }
+            
+            .forum-search input {
+                flex: 1;
+            }
+            
+            .discussion-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .discussion-stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <!-- ... navbar content ... -->
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <!-- ... mobile menu content ... -->
+    </div>
+
+    <main class="forum-page">
+        <div class="forum-container">
+            <!-- Forum Header -->
+            <div class="forum-header">
+                <div class="forum-title">
+                    <h1>Community Forum</h1>
+                    <p>Discuss your favorite manga with fellow readers</p>
+                </div>
+                
+                <button class="new-post-btn" onclick="openNewPostModal()">
+                    <i class="fas fa-pen"></i> New Discussion
+                </button>
+            </div>
+            
+            <!-- Forum Categories -->
+            <div class="forum-categories">
+                <div class="category-card" onclick="filterByCategory('general')">
+                    <div class="category-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3 class="category-name">General Discussion</h3>
+                    <div class="category-stats">
+                        <span><i class="fas fa-comment"></i> 2.3k topics</span>
+                        <span><i class="fas fa-users"></i> 15k posts</span>
+                    </div>
+                </div>
+                
+                <div class="category-card" onclick="filterByCategory('recommendations')">
+                    <div class="category-icon">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                    <h3 class="category-name">Recommendations</h3>
+                    <div class="category-stats">
+                        <span><i class="fas fa-comment"></i> 1.8k topics</span>
+                        <span><i class="fas fa-users"></i> 12k posts</span>
+                    </div>
+                </div>
+                
+                <div class="category-card" onclick="filterByCategory('reviews')">
+                    <div class="category-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3 class="category-name">Reviews</h3>
+                    <div class="category-stats">
+                        <span><i class="fas fa-comment"></i> 3.1k topics</span>
+                        <span><i class="fas fa-users"></i> 20k posts</span>
+                    </div>
+                </div>
+                
+                <div class="category-card" onclick="filterByCategory('help')">
+                    <div class="category-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h3 class="category-name">Help & Support</h3>
+                    <div class="category-stats">
+                        <span><i class="fas fa-comment"></i> 956 topics</span>
+                        <span><i class="fas fa-users"></i> 4.2k posts</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Forum Tabs -->
+            <div class="forum-tabs">
+                <button class="forum-tab active" data-tab="latest">Latest</button>
+                <button class="forum-tab" data-tab="popular">Most Popular</button>
+                <button class="forum-tab" data-tab="unanswered">Unanswered</button>
+                <button class="forum-tab" data-tab="solved">Solved</button>
+            </div>
+            
+            <!-- Forum Filters -->
+            <div class="forum-filters">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="today">Today</button>
+                    <button class="filter-btn" data-filter="week">This Week</button>
+                    <button class="filter-btn" data-filter="month">This Month</button>
+                </div>
+                
+                <div class="forum-search">
+                    <input type="text" placeholder="Search discussions..." id="forumSearch">
+                    <button onclick="searchForum()"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            
+            <!-- Discussions List -->
+            <div class="discussions-list" id="discussionsList">
+                <!-- Discussion Item 1 (Pinned) -->
+                <div class="discussion-item pinned">
+                    <div class="discussion-avatar">
+                        <img src="../images/default-avatar.png" alt="User">
+                    </div>
+                    <div class="discussion-content">
+                        <div class="discussion-header">
+                            <h3 class="discussion-title">Welcome to the MangaWebPH Community!</h3>
+                            <span class="discussion-badge badge-pinned">📌 Pinned</span>
+                        </div>
+                        <div class="discussion-meta">
+                            <span><i class="fas fa-user"></i> Admin</span>
+                            <span><i class="fas fa-clock"></i> 2 days ago</span>
+                            <span><i class="fas fa-folder"></i> Announcements</span>
+                        </div>
+                        <p class="discussion-excerpt">
+                            Welcome to the official MangaWebPH community forum! Here you can discuss your favorite manga, 
+                            get recommendations, and connect with fellow readers...
+                        </p>
+                        <div class="discussion-tags">
+                            <span class="discussion-tag">announcement</span>
+                            <span class="discussion-tag">welcome</span>
+                        </div>
+                    </div>
+                    <div class="discussion-stats">
+                        <div>
+                            <div class="stat-value">156</div>
+                            <div>replies</div>
+                        </div>
+                        <div>
+                            <div class="stat-value">1.2k</div>
+                            <div>views</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Discussion Item 2 (Popular) -->
+                <div class="discussion-item popular">
+                    <div class="discussion-avatar">
+                        <img src="../images/default-avatar.png" alt="User">
+                    </div>
+                    <div class="discussion-content">
+                        <div class="discussion-header">
+                            <h3 class="discussion-title">What's your top 10 must-read manga?</h3>
+                            <span class="discussion-badge badge-popular">🔥 Popular</span>
+                        </div>
+                        <div class="discussion-meta">
+                            <span><i class="fas fa-user"></i> MangaFan123</span>
+                            <span><i class="fas fa-clock"></i> 5 hours ago</span>
+                            <span><i class="fas fa-folder"></i> Recommendations</span>
+                        </div>
+                        <p class="discussion-excerpt">
+                            I'm looking to expand my reading list. What are your absolute must-read manga recommendations? 
+                            Any genre is welcome!...
+                        </p>
+                        <div class="discussion-tags">
+                            <span class="discussion-tag">recommendations</span>
+                            <span class="discussion-tag">top10</span>
+                            <span class="discussion-tag">must-read</span>
+                        </div>
+                    </div>
+                    <div class="discussion-stats">
+                        <div>
+                            <div class="stat-value">89</div>
+                            <div>replies</div>
+                        </div>
+                        <div>
+                            <div class="stat-value">3.4k</div>
+                            <div>views</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Discussion Item 3 -->
+                <div class="discussion-item">
+                    <div class="discussion-avatar">
+                        <img src="../images/default-avatar.png" alt="User">
+                    </div>
+                    <div class="discussion-content">
+                        <div class="discussion-header">
+                            <h3 class="discussion-title">One Piece Chapter 1089 Discussion Thread</h3>
+                            <span class="discussion-badge badge-new">🆕 New</span>
+                        </div>
+                        <div class="discussion-meta">
+                            <span><i class="fas fa-user"></i> PirateKing</span>
+                            <span><i class="fas fa-clock"></i> 30 mins ago</span>
+                            <span><i class="fas fa-folder"></i> Manga Discussion</span>
+                        </div>
+                        <p class="discussion-excerpt">
+                            Let's discuss the latest chapter! What did you think about the revelation about Luffy's new power? 
+                            Spoilers ahead!...
+                        </p>
+                        <div class="discussion-tags">
+                            <span class="discussion-tag">one piece</span>
+                            <span class="discussion-tag">spoilers</span>
+                            <span class="discussion-tag">chapter 1089</span>
+                        </div>
+                    </div>
+                    <div class="discussion-stats">
+                        <div>
+                            <div class="stat-value">23</div>
+                            <div>replies</div>
+                        </div>
+                        <div>
+                            <div class="stat-value">456</div>
+                            <div>views</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Discussion Item 4 -->
+                <div class="discussion-item">
+                    <div class="discussion-avatar">
+                        <img src="../images/default-avatar.png" alt="User">
+                    </div>
+                    <div class="discussion-content">
+                        <div class="discussion-header">
+                            <h3 class="discussion-title">Looking for manga similar to Solo Leveling</h3>
+                        </div>
+                        <div class="discussion-meta">
+                            <span><i class="fas fa-user"></i> Hunter99</span>
+                            <span><i class="fas fa-clock"></i> 2 hours ago</span>
+                            <span><i class="fas fa-folder"></i> Recommendations</span>
+                        </div>
+                        <p class="discussion-excerpt">
+                            I just finished Solo Leveling and I'm craving more manhwa with similar vibes. 
+                            Any recommendations for dungeon/gate hunting stories?...
+                        </p>
+                        <div class="discussion-tags">
+                            <span class="discussion-tag">solo leveling</span>
+                            <span class="discussion-tag">manhwa</span>
+                            <span class="discussion-tag">similar</span>
+                        </div>
+                    </div>
+                    <div class="discussion-stats">
+                        <div>
+                            <div class="stat-value">15</div>
+                            <div>replies</div>
+                        </div>
+                        <div>
+                            <div class="stat-value">234</div>
+                            <div>views</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Discussion Item 5 -->
+                <div class="discussion-item">
+                    <div class="discussion-avatar">
+                        <img src="../images/default-avatar.png" alt="User">
+                    </div>
+                    <div class="discussion-content">
+                        <div class="discussion-header">
+                            <h3 class="discussion-title">Is it worth reading the One Piece manga after watching the anime?</h3>
+                        </div>
+                        <div class="discussion-meta">
+                            <span><i class="fas fa-user"></i> AnimeOnly</span>
+                            <span><i class="fas fa-clock"></i> 1 day ago</span>
+                            <span><i class="fas fa-folder"></i> Help</span>
+                        </div>
+                        <p class="discussion-excerpt">
+                            I've been watching the One Piece anime for years and I'm considering switching to the manga. 
+                            Is it worth it? What are the differences?...
+                        </p>
+                        <div class="discussion-tags">
+                            <span class="discussion-tag">one piece</span>
+                            <span class="discussion-tag">anime vs manga</span>
+                            <span class="discussion-tag">advice</span>
+                        </div>
+                    </div>
+                    <div class="discussion-stats">
+                        <div>
+                            <div class="stat-value">42</div>
+                            <div>replies</div>
+                        </div>
+                        <div>
+                            <div class="stat-value">567</div>
+                            <div>views</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Discussion Item 6 -->
+                <div class="discussion-item">
+                    <div class="discussion-avatar">
+                        <img src="../images/default-avatar.png" alt="User">
+                    </div>
+                    <div class="discussion-content">
+                        <div class="discussion-header">
+                            <h3 class="discussion-title">Jujutsu Kaisen: Who's your favorite character?</h3>
+                        </div>
+                        <div class="discussion-meta">
+                            <span><i class="fas fa-user"></i> SorcererSupreme</span>
+                            <span><i class="fas fa-clock"></i> 3 hours ago</span>
+                            <span><i class="fas fa-folder"></i> General Discussion</span>
+                        </div>
+                        <p class="discussion-excerpt">
+                            With all the amazing characters in JJK, I'm curious who stands out to you. 
+                            Gojo? Itadori? Or maybe even Sukuna? Let's discuss!...
+                        </p>
+                        <div class="discussion-tags">
+                            <span class="discussion-tag">jujutsu kaisen</span>
+                            <span class="discussion-tag">characters</span>
+                            <span class="discussion-tag">discussion</span>
+                        </div>
+                    </div>
+                    <div class="discussion-stats">
+                        <div>
+                            <div class="stat-value">67</div>
+                            <div>replies</div>
+                        </div>
+                        <div>
+                            <div class="stat-value">890</div>
+                            <div>views</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </main>
+
+    <!-- New Post Modal -->
+    <div class="modal" id="newPostModal">
+        <div class="modal-content">
+            <h2>Create New Discussion</h2>
+            
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="postTitle" placeholder="Enter discussion title">
+            </div>
+            
+            <div class="form-group">
+                <label>Category</label>
+                <select id="postCategory">
+                    <option value="general">General Discussion</option>
+                    <option value="recommendations">Recommendations</option>
+                    <option value="reviews">Reviews</option>
+                    <option value="help">Help & Support</option>
+                    <option value="manga">Specific Manga</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Content</label>
+                <textarea id="postContent" rows="8" placeholder="Write your discussion content..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Tags (comma separated)</label>
+                <input type="text" id="postTags" placeholder="e.g., one piece, discussion, spoilers">
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeNewPostModal()">Cancel</button>
+                <button class="btn-primary" onclick="createPost()">Create Discussion</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Components -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <!-- ... chatbot content ... -->
+    </div>
+    
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+        
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/chatbot.js"></script>
+	<script src="../js/tasks.js"></script>
+    <script src="../js/pages/forum.js"></script>
+</body>
+</html>
